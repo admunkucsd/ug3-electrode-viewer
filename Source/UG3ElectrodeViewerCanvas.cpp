@@ -21,48 +21,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "VisualizerPluginCanvas.h"
+#include "UG3ElectrodeViewerCanvas.h"
 
-#include "VisualizerPlugin.h"
+#include "UG3ElectrodeViewer.h"
 
 
-VisualizerPluginCanvas::VisualizerPluginCanvas(VisualizerPlugin* processor_)
+UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
 	: processor(processor_)
 {
 
 }
 
 
-VisualizerPluginCanvas::~VisualizerPluginCanvas()
+UG3ElectrodeViewerCanvas::~UG3ElectrodeViewerCanvas()
 {
 
 }
 
 
-void VisualizerPluginCanvas::resized()
+void UG3ElectrodeViewerCanvas::resized()
 {
 
 }
 
-void VisualizerPluginCanvas::refreshState()
-{
-
-}
-
-
-void VisualizerPluginCanvas::update()
+void UG3ElectrodeViewerCanvas::refreshState()
 {
 
 }
 
 
-void VisualizerPluginCanvas::refresh()
+void UG3ElectrodeViewerCanvas::update()
 {
 
 }
 
 
-void VisualizerPluginCanvas::paint(Graphics& g)
+void UG3ElectrodeViewerCanvas::refresh()
+{
+
+}
+
+
+void UG3ElectrodeViewerCanvas::paint(Graphics& g)
 {
 
 	g.fillAll(Colours::black);

@@ -33,23 +33,49 @@
 	Includes buttons for opening the canvas in a tab or window
 */
 
-class VisualizerPluginEditor : public VisualizerEditor
+class UG3ElectrodeViewerEditor : public VisualizerEditor, ComboBox::Listener
 {
 public:
 
 	/** Constructor */
-	VisualizerPluginEditor(GenericProcessor* parentNode);
+	UG3ElectrodeViewerEditor(GenericProcessor* parentNode);
 
 	/** Destructor */
-	~VisualizerPluginEditor() { }
+	~UG3ElectrodeViewerEditor() { }
+    
+    /** Updates channel count */
+    void updateSettings() override;
+    
+    /** Sets the drawable stream */
+    void comboBoxChanged(ComboBox *cb) override;
 
 	/** Creates the canvas */
-	Visualizer* createNewCanvas();
+	Visualizer* createNewCanvas() override;
+    
+    /** Updates available streams*/
+    void updateStreamSelectorOptions();
 
+    /** Disables stream selection*/
+    void startAcquisition() override;
+
+    /** Enables stream selection */
+    void stopAcquisition() override;
+    
 private:
+    
+    Array<int> inputStreamIds;
+
+    class UG3ElectrodeViewer* electrodeViewerNode;
+
+    std::unique_ptr<Label> streamSelectionLabel;
+    std::unique_ptr<ComboBox> streamSelection;
+
+    uint16 selectedStream = 0;
+
+    void setDrawableStream(uint16 streamId);
 
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerPluginEditor);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerEditor);
 };
 
 

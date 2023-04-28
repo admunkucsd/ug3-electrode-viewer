@@ -33,14 +33,14 @@
 	or an extended settings interface.
 */
 
-class VisualizerPlugin : public GenericProcessor
+class UG3ElectrodeViewer : public GenericProcessor
 {
 public:
 	/** The class constructor, used to initialize any members.*/
-	VisualizerPlugin();
+	UG3ElectrodeViewer();
 
 	/** The class destructor, used to deallocate memory*/
-	~VisualizerPlugin();
+	~UG3ElectrodeViewer();
 
 	/** If the processor has a custom editor, this method must be defined to instantiate it. */
 	AudioProcessorEditor* createEditor() override;
@@ -70,6 +70,8 @@ public:
 		Called automatically whenever a broadcast message is sent through the signal chain */
 	void handleBroadcastMessage(String message) override;
 
+    String handleConfigMessage(String message) override;
+
 	/** Saving custom settings to XML. This method is not needed to save the state of
 		Parameter objects */
 	void saveCustomParametersToXml(XmlElement* parentElement) override;
@@ -77,11 +79,23 @@ public:
 	/** Load custom settings from XML. This method is not needed to load the state of
 		Parameter objects*/
 	void loadCustomParametersFromXml(XmlElement* parentElement) override;
+    
+    /** Changes the selected stream */
+    void setParameter(int index, float value) override;
+    
+    void requestElectrodeLayout();
+    
+    
 
 private:
 
+    Array<float> currentValues;
+    
+    uint16 currentStream;
+    
+
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerPlugin);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewer);
 
 };
 

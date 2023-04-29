@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class UG3ElectrodeViewer;
 
+class UG3ElectrodeDisplay;
+
 /**
 * 
 	Draws data in real time
@@ -61,13 +63,28 @@ public:
 private:
 
 	/** Pointer to the processor class */
-	UG3ElectrodeViewer* processor;
+	UG3ElectrodeViewer* node;
+    
+    std::unique_ptr<UG3ElectrodeDisplay> display;
 
-	/** Class for plotting data */
-	InteractivePlot plt;
+	
+    std::unique_ptr<class UG3ElectrodeViewerViewport> viewport;
 
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerCanvas);
+};
+
+class UG3ElectrodeViewerViewport : public Viewport
+{
+public:
+    UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas);
+    virtual ~UG3ElectrodeViewerViewport() override;
+    void visibleAreaChanged(const juce::Rectangle<int>& newVisibleArea) override;
+
+private:
+    UG3ElectrodeViewerCanvas* canvas;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerViewport);
 };
 
 

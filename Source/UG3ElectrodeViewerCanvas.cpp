@@ -25,10 +25,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "UG3ElectrodeViewer.h"
 
+#include "UG3ElectrodeDisplay.h"
+
 
 UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
-	: processor(processor_)
+	: node(processor_)
 {
+    refreshRate = 30;
+    
+    viewport = std::make_unique<UG3ElectrodeViewerViewport>(this);
+
+    display = std::make_unique<UG3ElectrodeDisplay>(this, viewport.get());
+    
+    viewport->setViewedComponent(display.get(), false);
+    viewport->setScrollBarsShown(true, true, true, true);
+
+    //scrollBarThickness = viewport->getScrollBarThickness();
+    
+    addAndMakeVisible (viewport.get());
+    
+    //toolbar = std::make_unique<UG3InterfaceToolbar>(this);
+    //addAndMakeVisible(toolbar.get());
+    
+    update();
 
 }
 
@@ -41,24 +60,40 @@ UG3ElectrodeViewerCanvas::~UG3ElectrodeViewerCanvas()
 
 void UG3ElectrodeViewerCanvas::resized()
 {
-
+//    int componentsEndX = 8;
+//    int toolbarHeight = 55;
+//    viewport->setBounds(0, 0, getWidth(), getHeight()-toolbarHeight); // leave space at bottom for buttons
+//
+    viewport->setBounds(0, 0, getWidth(), getHeight());
+//    gridDisplay->setBounds(0,0, std::max(gridDisplay->getTotalHeight(), getWidth() - scrollBarThickness), std::max(gridDisplay->getTotalHeight(), getHeight() - toolbarHeight));
+//    toolbar->setBounds(0,getHeight() - toolbarHeight, std::max(gridDisplay->getTotalHeight(), getWidth() - scrollBarThickness), toolbarHeight);
+    display->setBounds(0,0, getWidth(), getHeight());
 }
 
 void UG3ElectrodeViewerCanvas::refreshState()
 {
+
+    resized();
 
 }
 
 
 void UG3ElectrodeViewerCanvas::update()
 {
-
+    display->resized();
+    //toolbar->resized();
+    resized();
 }
 
 
 void UG3ElectrodeViewerCanvas::refresh()
 {
+    const float* values = node->getLatestValues();
 
+    display->refresh(values);
+
+    repaint();
+    
 }
 
 

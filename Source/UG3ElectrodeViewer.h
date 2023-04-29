@@ -85,7 +85,9 @@ public:
     
     void requestElectrodeLayout();
     
-    
+    const float* getLatestValues() {
+        return currentValues.getRawDataPointer();
+    }
 
 private:
 

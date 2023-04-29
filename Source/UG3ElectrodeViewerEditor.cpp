@@ -32,6 +32,7 @@ UG3ElectrodeViewerEditor::UG3ElectrodeViewerEditor(GenericProcessor* p)
     : VisualizerEditor(p, "Visualizer", 200)
 {
 
+    electrodeViewerNode = (UG3ElectrodeViewer*) p;
     streamSelectionLabel = std::make_unique<Label>("Stream Selection Label", "Display Stream:");
     streamSelectionLabel->setBounds(10, 30, 130, 24);
     addAndMakeVisible(streamSelectionLabel.get());

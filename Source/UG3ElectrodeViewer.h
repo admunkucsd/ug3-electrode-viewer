@@ -88,12 +88,18 @@ public:
     const float* getLatestValues() {
         return currentValues.getRawDataPointer();
     }
+    
+    void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_);
 
 private:
 
     Array<float> currentValues;
     
     uint16 currentStream;
+    
+    int layoutMaxX;
+    int layoutMaxY;
+    std::vector<int> layout;
     
 
 	/** Generates an assertion if this class leaks */

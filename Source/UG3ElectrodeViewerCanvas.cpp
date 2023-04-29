@@ -80,9 +80,12 @@ void UG3ElectrodeViewerCanvas::refreshState()
 
 void UG3ElectrodeViewerCanvas::update()
 {
-    display->resized();
-    //toolbar->resized();
-    resized();
+    int layoutMaxX;
+    int layoutMaxY;
+    std::vector<int> layout;
+    node -> getLayoutParameters(layoutMaxX, layoutMaxY, layout);
+    display -> setElectrodeLayout(layoutMaxX, layoutMaxY, layout);
+    
 }
 
 
@@ -102,4 +105,11 @@ void UG3ElectrodeViewerCanvas::paint(Graphics& g)
 
 	g.fillAll(Colours::black);
 
+}
+
+UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
+UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}
+
+void UG3ElectrodeViewerViewport::visibleAreaChanged(const juce::Rectangle<int>& newVisibleArea) {
+    canvas->repaint(getBoundsInParent());
 }

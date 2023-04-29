@@ -58,6 +58,7 @@ void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std
     
         
     totalHeight = newTotalHeight + TOP_BOUND - SPACING;
+    repaint();
 
 }
 
@@ -74,7 +75,7 @@ void UG3ElectrodeDisplay::refresh(const float * values) {
     int count = 0;
     for (auto e : electrodes)
     {
-        e->setColour(ColourScheme::getColourForNormalizedValue((float)(values[count])));
+        e->setColour(ColourScheme::getColourForNormalizedValue((float)(values[count])/100));
         count += 1;
     }
     

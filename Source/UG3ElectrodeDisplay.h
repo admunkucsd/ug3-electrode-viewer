@@ -39,9 +39,7 @@ public:
     UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport);
         
     void refresh(const float * value);
-    
-    void resized();
-    
+        
     void paint(Graphics& g);
         
     void setElectrodeLayout(int layoutXMax, int layoutYMax, std::vector<int> layout);

@@ -27,9 +27,10 @@
 
 
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
-    : GenericProcessor("UG3 Electrode Viewer")
+    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0)
 {
     requestElectrodeLayout();
+    isEnabled = false;
 }
 
 
@@ -96,7 +97,19 @@ void UG3ElectrodeViewer::handleBroadcastMessage(String message)
 }
 
 String UG3ElectrodeViewer::handleConfigMessage(String message) {
-    
+    var payload;
+    if(BroadcastParser::checkForCommand("UG3ElectrodeViewer", "LOADELECTRODELAYOUT", message, payload)) {
+        int tempLayoutMaxX;
+        int tempLayoutMaxY;
+        std::vector<int> tempLayout;
+        if(!BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxX", tempLayoutMaxX, 0) || !BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxY", tempLayoutMaxY, 0)) {
+            return "";
+        }
+        layoutMaxX = tempLayoutMaxX;
+        layoutMaxY = tempLayoutMaxY;
+        editor -> updateVisualizer();
+        isEnabled = true;
+    }
 }
 
 
@@ -134,3 +147,10 @@ void UG3ElectrodeViewer::requestElectrodeLayout() {
     sendConfigMessage(sn, message);
     
 }
+
+void UG3ElectrodeViewer::getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_){
+    layoutMaxX_ = layoutMaxX;
+    layoutMaxY_ = layoutMaxY;
+    layout_ = layout;
+}
+

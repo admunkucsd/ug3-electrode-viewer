@@ -29,7 +29,6 @@
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
     : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0)
 {
-    requestElectrodeLayout();
     isEnabled = false;
 }
 
@@ -49,6 +48,7 @@ AudioProcessorEditor* UG3ElectrodeViewer::createEditor()
 
 void UG3ElectrodeViewer::updateSettings()
 {
+    requestElectrodeLayout();
 
 
 }
@@ -110,6 +110,7 @@ String UG3ElectrodeViewer::handleConfigMessage(String message) {
         editor -> updateVisualizer();
         isEnabled = true;
     }
+    return "";
 }
 
 
@@ -127,23 +128,25 @@ void UG3ElectrodeViewer::loadCustomParametersFromXml(XmlElement* parentElement)
 
 
 void UG3ElectrodeViewer::requestElectrodeLayout() {
-    GenericProcessor* sn = sourceNode;
-    
-    if(sn == nullptr)
+    GenericProcessor* sn = getSourceNode();
+
+    if(sn == nullptr) {
         return;
+    }
     
     while(sn -> sourceNode != nullptr) {
         sn = sn -> sourceNode;
     }
     
     if(!(sn -> isSource())) {
+
         return;
     }
     std::map<String, var> payload;
     payload["requestNodeId"] = getNodeId();
 
     String message = BroadcastParser::build("", "GETELECTRODELAYOUT", payload);
-    
+
     sendConfigMessage(sn, message);
     
 }

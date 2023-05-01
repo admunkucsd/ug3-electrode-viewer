@@ -64,7 +64,11 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
 
             int globalIndex = channel->getGlobalIndex();
             int localIndex = channel->getLocalIndex();
-            currentValues.set(count++,*buffer.getReadPointer(globalIndex, 0));
+            currentValues.set(count,*buffer.getReadPointer(globalIndex, 0));
+            if(channel -> impedance.measured) {
+                impedanceValues.set(count, channel -> impedance.magnitude);
+            }
+            count++;
         }
     }
 
@@ -110,6 +114,10 @@ String UG3ElectrodeViewer::handleConfigMessage(String message) {
         isEnabled = true;
         currentValues.clear();
         currentValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
+        impedanceValues.clear();
+        impedanceValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
+
+
     }
     return "";
 }

@@ -46,6 +46,12 @@ public:
     
     int getTotalHeight() {return totalHeight;}
     
+    int getTotalWidth() {return totalWidth;}
+    
+    void setVoltageScale(int microVolts_);
+    
+
+    
     
 protected:
     const static int LEFT_BOUND = 20;
@@ -66,9 +72,10 @@ private:
     Colour selectedColor;
     Colour highlightedColor;
     
-    
+    int voltageScale;
+
     int totalHeight;
-    int layoutMaxWidth = 0;
+    int totalWidth;
 
     
 };

@@ -30,6 +30,7 @@ class UG3ElectrodeViewer;
 
 class UG3ElectrodeDisplay;
 
+class UG3ElectrodeViewerToolbar;
 /**
 * 
 	Draws data in real time
@@ -59,12 +60,19 @@ public:
 
 	/** Draws the canvas background */
 	void paint(Graphics& g) override;
+    
+    void setVoltageScale(int microVolts);
+    
+    void toggleImpedanceMode(bool isImpedanceOn);
 
 	/** Called when data acquisition is active**/
 	void beginAnimation() override;
 
 	/** Called when data acquisition ends**/
 	void endAnimation() override;
+    
+    void toggleImpedanceMode(bool isImpedanceOn_);
+
 
 private:
 
@@ -73,8 +81,13 @@ private:
     
     std::unique_ptr<UG3ElectrodeDisplay> display;
 
+    std::unique_ptr<UG3ElectrodeViewerToolbar> toolbar;
+
+    int scrollBarThickness;
 	
     std::unique_ptr<class UG3ElectrodeViewerViewport> viewport;
+
+    bool isImpedanceOn;
 
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerCanvas);

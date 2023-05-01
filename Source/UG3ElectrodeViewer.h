@@ -89,11 +89,20 @@ public:
         return currentValues.getRawDataPointer();
     }
     
+    const float* getImpedanceMagnitudes() {
+        return impedanceValues.getRawDataPointer();
+    }
+    
     void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_);
+    
+    
 
 private:
 
     Array<float> currentValues;
+    Array<float> impedanceValues;
+
+
     
     uint16 currentStream;
     

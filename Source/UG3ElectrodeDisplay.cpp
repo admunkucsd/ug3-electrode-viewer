@@ -21,7 +21,7 @@ const Rectangle<int> Electrode::getRectangle() {
     return rect;
 }
 
-UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport){
+UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0){
     selectedColor = ColourScheme::getColourForNormalizedValue(.9);
 
     
@@ -75,7 +75,8 @@ void UG3ElectrodeDisplay::refresh(const float * values) {
     int count = 0;
     for (auto e : electrodes)
     {
-        e->setColour(ColourScheme::getColourForNormalizedValue((float)(values[count])/100));
+        e->setColour(ColourScheme::getColourForNormalizedValue((float)(values[count])/5000.0f));
+
         count += 1;
     }
     

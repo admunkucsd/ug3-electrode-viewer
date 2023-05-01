@@ -60,6 +60,12 @@ public:
 	/** Draws the canvas background */
 	void paint(Graphics& g) override;
 
+	/** Called when data acquisition is active**/
+	void beginAnimation() override;
+
+	/** Called when data acquisition ends**/
+	void endAnimation() override;
+
 private:
 
 	/** Pointer to the processor class */

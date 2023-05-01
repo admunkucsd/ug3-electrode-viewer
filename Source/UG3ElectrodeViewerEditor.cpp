@@ -118,9 +118,11 @@ Visualizer* UG3ElectrodeViewerEditor::createNewCanvas()
 void UG3ElectrodeViewerEditor::startAcquisition()
 {
     streamSelection->setEnabled(false);
+    enable();
 }
 
 void UG3ElectrodeViewerEditor::stopAcquisition()
 {
     streamSelection->setEnabled(true);
+    disable();
 }

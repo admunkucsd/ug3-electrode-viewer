@@ -27,7 +27,7 @@
 
 
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
-    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0)
+    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0) 
 {
     isEnabled = false;
 }
@@ -56,7 +56,7 @@ void UG3ElectrodeViewer::updateSettings()
 
 void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
 {
-
+    int count = 0;
     for (auto channel : continuousChannels)
     {
         if (channel->getStreamId() == currentStream)
@@ -64,8 +64,7 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
 
             int globalIndex = channel->getGlobalIndex();
             int localIndex = channel->getLocalIndex();
-
-            currentValues.add(*buffer.getReadPointer(globalIndex, 0));
+            currentValues.set(count++,*buffer.getReadPointer(globalIndex, 0));
         }
     }
 
@@ -109,6 +108,8 @@ String UG3ElectrodeViewer::handleConfigMessage(String message) {
         layoutMaxY = tempLayoutMaxY;
         editor -> updateVisualizer();
         isEnabled = true;
+        currentValues.clear();
+        currentValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
     }
     return "";
 }

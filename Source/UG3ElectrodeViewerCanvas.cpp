@@ -92,7 +92,7 @@ void UG3ElectrodeViewerCanvas::update()
 void UG3ElectrodeViewerCanvas::refresh()
 {
     const float* values = node->getLatestValues();
-
+    std::cout << "value[0]: " << values[0] << std::endl;
     display->refresh(values);
 
     repaint();
@@ -105,6 +105,14 @@ void UG3ElectrodeViewerCanvas::paint(Graphics& g)
 
 	g.fillAll(Colours::black);
 
+}
+
+void UG3ElectrodeViewerCanvas::beginAnimation() {
+    startCallbacks();
+}
+
+void UG3ElectrodeViewerCanvas::endAnimation() {
+    stopCallbacks();
 }
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}

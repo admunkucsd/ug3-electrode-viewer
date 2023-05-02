@@ -38,7 +38,7 @@ class UG3ElectrodeDisplay : public Component{
 public:
     UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport);
         
-    void refresh(const float * value, bool isZeroCentered);
+    void refresh(const float * value, bool isZeroCentered, int scaleFactor);
         
     void paint(Graphics& g);
         
@@ -48,8 +48,8 @@ public:
     
     int getTotalWidth() {return totalWidth;}
     
-    void setVoltageScale(int microVolts_);
     
+    void setColorRangeText(String max, String min);
 
     
     
@@ -67,12 +67,17 @@ private:
     UG3ElectrodeViewerCanvas* canvas;
     Viewport* viewport;
     OwnedArray<Electrode> electrodes;
+
+    OwnedArray<Electrode> colorRange;
+    static const int colorRangeSize;
+
     OwnedArray<juce::Rectangle<int>> sectionDividers;
     
     Colour selectedColor;
     Colour highlightedColor;
     
-    int voltageScale;
+    String maxColorRangeText;
+    String minColorRangeText;
 
     int totalHeight;
     int totalWidth;

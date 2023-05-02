@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
-	: node(processor_), isImpedanceOn(false), areElectrodeColorsZeroCentered(false)
+	: node(processor_), isImpedanceOn(false), areElectrodeColorsZeroCentered(false), colorScaleFactor(0), colorScaleText("")
 {
     refreshRate = 30;
     
@@ -98,7 +98,7 @@ void UG3ElectrodeViewerCanvas::refresh()
         values= node->getLatestValues();
     }
 
-    display->refresh(values, areElectrodeColorsZeroCentered);
+    display->refresh(values, areElectrodeColorsZeroCentered, colorScaleFactor);
 
     repaint();
     
@@ -120,8 +120,10 @@ void UG3ElectrodeViewerCanvas::endAnimation() {
     stopCallbacks();
 }
 
-void UG3ElectrodeViewerCanvas::setVoltageScale(int microVolts) {
-    display -> setVoltageScale(microVolts);
+void UG3ElectrodeViewerCanvas::setColorScaleFactor(int scaleFactor, String unitText) {
+    colorScaleFactor = scaleFactor;
+    colorScaleText = unitText;
+    setDisplayColorRangeText();
 }
 
 void UG3ElectrodeViewerCanvas::toggleImpedanceMode(bool isImpedanceOn_) {
@@ -131,8 +133,15 @@ void UG3ElectrodeViewerCanvas::toggleImpedanceMode(bool isImpedanceOn_) {
 
 void UG3ElectrodeViewerCanvas::toggleZeroCenter(bool areElectrodeColorsZeroCentered_) {
     areElectrodeColorsZeroCentered = areElectrodeColorsZeroCentered_;
-
+    setDisplayColorRangeText();
 }
+
+void UG3ElectrodeViewerCanvas::setDisplayColorRangeText() {
+    String max = colorScaleText;
+    String min = areElectrodeColorsZeroCentered ? String("-") + colorScaleText : String("0");
+    display->setColorRangeText(max, min);
+}
+
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
 UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}

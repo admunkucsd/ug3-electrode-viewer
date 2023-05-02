@@ -21,7 +21,10 @@ const Rectangle<int> Electrode::getRectangle() {
     return rect;
 }
 
-UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), voltageScale(1){
+const int UG3ElectrodeDisplay::colorRangeSize = 32;
+
+
+UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), maxColorRangeText(""), minColorRangeText("") {
     selectedColor = ColourScheme::getColourForNormalizedValue(.9);
 
     
@@ -56,9 +59,18 @@ void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std
             layoutIndex++;
         }
     }
-    
+
         
     totalHeight = newTotalHeight + TOP_BOUND - SPACING;
+    
+    jassert(colorRangeSize > 1);
+
+    for (int i = 0; i < colorRangeSize; i++) {
+        Electrode* e = new Electrode(Rectangle<int>(totalWidth, totalHeight - TOP_BOUND - HEIGHT * (i + 1), WIDTH, HEIGHT));
+        e->setColour(ColourScheme::getColourForNormalizedValue((float)(i) / float(colorRangeSize)));
+        colorRange.add(e);
+    }
+    
     repaint();
 
 }
@@ -69,19 +81,27 @@ void UG3ElectrodeDisplay::paint(Graphics& g) {
         g.setColour(e -> getColour());
         g.fillRect(e -> getRectangle());
     }
+    for (Electrode* e : colorRange) {
+        g.setColour(e->getColour());
+        g.fillRect(e->getRectangle());
+    }
+
+    g.drawText(maxColorRangeText, colorRange[colorRangeSize - 1]->getRectangle().getRight(), colorRange[colorRangeSize - 1]->getRectangle().getY(), 400, 16, Justification::left);
+    g.drawText(minColorRangeText, colorRange[1]->getRectangle().getRight(), colorRange[1]->getRectangle().getY(), 400, 16, Justification::left);
+
 }
 
-void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered) {
+void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered, int scaleFactor) {
     
     int count = 0;
     for (auto e : electrodes)
     {
         float normalizedValue; 
         if (isZeroCentered) {
-            normalizedValue = values[count] / (2.0f * float(voltageScale)) + 0.5f;
+            normalizedValue = values[count] / (2.0f * float(scaleFactor)) + 0.5f;
         }
         else {
-            normalizedValue = values[count] / float(voltageScale);
+            normalizedValue = values[count] / float(scaleFactor);
         }
         e->setColour(ColourScheme::getColourForNormalizedValue(normalizedValue));
         count += 1;
@@ -89,8 +109,9 @@ void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered) {
 
 }
 
-void UG3ElectrodeDisplay::setVoltageScale(int microVolts_) {
-    if(microVolts_ <= 0)
-        return;
-    voltageScale = microVolts_;
+void UG3ElectrodeDisplay::setColorRangeText(String max, String min) {
+    maxColorRangeText = max;
+    minColorRangeText = min;
+    repaint();
 }
+

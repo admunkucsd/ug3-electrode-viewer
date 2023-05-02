@@ -61,7 +61,7 @@ public:
 	/** Draws the canvas background */
 	void paint(Graphics& g) override;
     
-    void setVoltageScale(int microVolts);
+    void setColorScaleFactor(int factor, String unitText);
     
     void toggleImpedanceMode(bool isImpedanceOn);
 
@@ -73,6 +73,8 @@ public:
 
 	/** Called when data acquisition ends**/
 	void endAnimation() override;
+
+	void setDisplayColorRangeText();
     
 
 private:
@@ -89,8 +91,9 @@ private:
     std::unique_ptr<class UG3ElectrodeViewerViewport> viewport;
 
     bool isImpedanceOn;
-
 	bool areElectrodeColorsZeroCentered;
+	int colorScaleFactor;
+	String colorScaleText;
 
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerCanvas);

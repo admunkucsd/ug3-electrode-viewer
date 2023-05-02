@@ -59,6 +59,9 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     }
     voltageSelector->setSelectedId(1, dontSendNotification);
     addAndMakeVisible(voltageSelector);
+
+    canvas->setColorScaleFactor(voltageOptions[voltageSelector->getSelectedItemIndex()], voltageSelector->getText());
+
     voltageSelector->addListener(this);
 
     impedanceSelector = new ComboBox("Impedance Selector");
@@ -100,9 +103,9 @@ void UG3ElectrodeViewerToolbar::paint(Graphics& g){
 
 void UG3ElectrodeViewerToolbar::comboBoxChanged (ComboBox* combo){
     if(combo == voltageSelector) {
-        canvas -> setVoltageScale(voltageOptions[combo->getSelectedItemIndex()]);
+        canvas -> setColorScaleFactor(voltageOptions[combo->getSelectedItemIndex()], combo->getText());
     } else if (combo == impedanceSelector) {
-        canvas->setVoltageScale(impedanceOptions[combo->getSelectedItemIndex()]);
+        canvas->setColorScaleFactor(impedanceOptions[combo->getSelectedItemIndex()], combo->getText());
     }
 
 }
@@ -116,10 +119,10 @@ void UG3ElectrodeViewerToolbar::buttonClicked (Button* button){
         addAndMakeVisible((button->getToggleState() ? impedanceSelector : voltageSelector));
 
         if (button->getToggleState()) {
-            canvas->setVoltageScale(impedanceOptions[impedanceSelector->getSelectedItemIndex()]);
+            canvas->setColorScaleFactor(impedanceOptions[impedanceSelector->getSelectedItemIndex()], impedanceSelector -> getText());
         }
         else {
-            canvas->setVoltageScale(voltageOptions[voltageSelector->getSelectedItemIndex()]);
+            canvas->setColorScaleFactor(voltageOptions[voltageSelector->getSelectedItemIndex()], voltageSelector -> getText());
         }
         resized();
         return;

@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
-	: node(processor_)
+	: node(processor_), isImpedanceOn(false)
 {
     refreshRate = 30;
     
@@ -49,8 +49,9 @@ UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor
     toolbar = std::make_unique<UG3ElectrodeViewerToolbar>(this);
     addAndMakeVisible(toolbar.get());
     
-    update();
 
+    update();
+    
 }
 
 
@@ -96,7 +97,7 @@ void UG3ElectrodeViewerCanvas::refresh()
     } else {
         values= node->getLatestValues();
     }
-    std::cout << "value[0]: " << values[0] << std::endl;
+
     display->refresh(values);
 
     repaint();

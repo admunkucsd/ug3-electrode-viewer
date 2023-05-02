@@ -8,7 +8,7 @@
 #include "UG3ElectrodeViewerToolbar.h"
 #include "UG3ElectrodeViewerCanvas.h"
 
-const std::vector<int> UG3ElectrodeViewerToolbar::voltageOptions = {1, 5, 10, 50, 100, 500, 1000, 5000};
+const std::vector<int> UG3ElectrodeViewerToolbar::voltageOptions = {1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000};
 
 UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* canvas) : canvas(canvas){
     
@@ -21,13 +21,13 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     impedanceButton->setToggleState(false, sendNotification);
     addAndMakeVisible(impedanceButton);
     
-    voltageSelector = new ComboBox("Voltage Selector (uV)");
-    voltageSelector->setSelectedId (1, dontSendNotification);
+    voltageSelector = new ComboBox("Voltage Selector (+/-uV)");
     int i = 0;
     for (auto option : voltageOptions) {
         voltageSelector->addItem(String(option), i+1);
         i++;
     }
+    voltageSelector->setSelectedId(1, dontSendNotification);
     addAndMakeVisible(voltageSelector);
     voltageSelector->addListener(this);
     
@@ -49,7 +49,7 @@ void UG3ElectrodeViewerToolbar::paint(Graphics& g){
     g.setColour(Colour(100,100,100));
     g.setFont(Font("Fira Sans", 16, Font::plain));
 
-    g.drawText("Voltage Selector (uV)", voltageSelector->getX(), voltageSelector->getY()-22, 300, 20, Justification::left, false);
+    g.drawText("Voltage Selector (+/-uV)", voltageSelector->getX(), voltageSelector->getY()-22, 300, 20, Justification::left, false);
     g.drawText("Impedance Mode", impedanceButton->getX(), voltageSelector->getY()-22, 300, 20, Justification::left, false);
    
 

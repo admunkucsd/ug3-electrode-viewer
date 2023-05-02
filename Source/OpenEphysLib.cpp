@@ -59,7 +59,7 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 		info->type = Plugin::Type::PROCESSOR;
 
 		//Processor name
-		info->processor.name = "Visualizer Plugin"; // Processor name shown in the GUI
+		info->processor.name = "UG3 Electrode Viewer"; // Processor name shown in the GUI
 
 		//Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER processors.
 		info->processor.type = Processor::Type::SINK;

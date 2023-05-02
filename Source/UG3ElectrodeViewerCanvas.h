@@ -71,8 +71,6 @@ public:
 	/** Called when data acquisition ends**/
 	void endAnimation() override;
     
-    void toggleImpedanceMode(bool isImpedanceOn_);
-
 
 private:
 

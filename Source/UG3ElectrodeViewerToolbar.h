@@ -13,7 +13,6 @@
 class UG3ElectrodeViewerCanvas;
 
 class UG3ElectrodeViewerToolbar : public Component,
-public Label::Listener,
 public ComboBox::Listener,
 public Button::Listener{
 public:

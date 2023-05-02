@@ -32,6 +32,7 @@ void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std
     const int totalPixels = layoutMaxX * layoutMaxY;
     int layoutIndex = 0;
     newTotalHeight = TOP_BOUND;
+    electrodes.clear();
         for (int i = 0; i < totalPixels; i++)
     {
         
@@ -75,11 +76,11 @@ void UG3ElectrodeDisplay::refresh(const float * values) {
     int count = 0;
     for (auto e : electrodes)
     {
-        e->setColour(ColourScheme::getColourForNormalizedValue((float)(values[count])/float(voltageScale)));
-
+        float normalizedVoltage = values[count] / (2.0f * float(voltageScale)) + 0.5f;
+        e->setColour(ColourScheme::getColourForNormalizedValue(normalizedVoltage));
         count += 1;
     }
-    
+
 }
 
 void UG3ElectrodeDisplay::setVoltageScale(int microVolts_) {

@@ -27,7 +27,7 @@
 
 
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
-    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0) 
+    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0)
 {
     isEnabled = false;
 }
@@ -64,14 +64,14 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
 
             int globalIndex = channel->getGlobalIndex();
             int localIndex = channel->getLocalIndex();
-            currentValues.set(count,*buffer.getReadPointer(globalIndex, 0));
+            currentValues.set(count,*(buffer.getReadPointer(globalIndex, 0)));
             if(channel -> impedance.measured) {
                 impedanceValues.set(count, channel -> impedance.magnitude);
             }
             count++;
         }
     }
-
+    
 }
 
 void UG3ElectrodeViewer::setParameter(int index, float value)

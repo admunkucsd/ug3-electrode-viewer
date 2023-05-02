@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
-	: node(processor_), isImpedanceOn(false)
+	: node(processor_), isImpedanceOn(false), areElectrodeColorsZeroCentered(false)
 {
     refreshRate = 30;
     
@@ -98,7 +98,7 @@ void UG3ElectrodeViewerCanvas::refresh()
         values= node->getLatestValues();
     }
 
-    display->refresh(values);
+    display->refresh(values, areElectrodeColorsZeroCentered);
 
     repaint();
     
@@ -127,6 +127,11 @@ void UG3ElectrodeViewerCanvas::setVoltageScale(int microVolts) {
 void UG3ElectrodeViewerCanvas::toggleImpedanceMode(bool isImpedanceOn_) {
     isImpedanceOn = isImpedanceOn_;
     
+}
+
+void UG3ElectrodeViewerCanvas::toggleZeroCenter(bool areElectrodeColorsZeroCentered_) {
+    areElectrodeColorsZeroCentered = areElectrodeColorsZeroCentered_;
+
 }
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}

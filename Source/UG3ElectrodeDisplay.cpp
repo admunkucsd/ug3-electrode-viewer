@@ -71,13 +71,19 @@ void UG3ElectrodeDisplay::paint(Graphics& g) {
     }
 }
 
-void UG3ElectrodeDisplay::refresh(const float * values) {
+void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered) {
     
     int count = 0;
     for (auto e : electrodes)
     {
-        float normalizedVoltage = values[count] / (2.0f * float(voltageScale)) + 0.5f;
-        e->setColour(ColourScheme::getColourForNormalizedValue(normalizedVoltage));
+        float normalizedValue; 
+        if (isZeroCentered) {
+            normalizedValue = values[count] / (2.0f * float(voltageScale)) + 0.5f;
+        }
+        else {
+            normalizedValue = values[count] / float(voltageScale);
+        }
+        e->setColour(ColourScheme::getColourForNormalizedValue(normalizedValue));
         count += 1;
     }
 

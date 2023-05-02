@@ -31,15 +31,21 @@ public:
     void buttonClicked (Button* button);
     
     void toggleEnabled(bool enabled);
+
+    static String calculateMetricString(int value, String unit, int prefixShiftsOffset = 0);
     
     
 private:
     
     static const std::vector<int> voltageOptions;
-    
+    static const std::vector<int> impedanceOptions;
+
     UG3ElectrodeViewerCanvas* canvas;
     ScopedPointer<ComboBox> voltageSelector;
+    ScopedPointer<ComboBox> impedanceSelector;
     ScopedPointer<UtilityButton> impedanceButton;
+    ScopedPointer<UtilityButton> zeroCenterButton;
+
 
 };
 

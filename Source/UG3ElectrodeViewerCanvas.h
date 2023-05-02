@@ -65,6 +65,9 @@ public:
     
     void toggleImpedanceMode(bool isImpedanceOn);
 
+	void toggleZeroCenter(bool areElectrodeColorsZeroCentered_);
+
+
 	/** Called when data acquisition is active**/
 	void beginAnimation() override;
 
@@ -86,6 +89,8 @@ private:
     std::unique_ptr<class UG3ElectrodeViewerViewport> viewport;
 
     bool isImpedanceOn;
+
+	bool areElectrodeColorsZeroCentered;
 
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerCanvas);

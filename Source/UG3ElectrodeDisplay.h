@@ -38,7 +38,7 @@ class UG3ElectrodeDisplay : public Component{
 public:
     UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport);
         
-    void refresh(const float * value);
+    void refresh(const float * value, bool isZeroCentered);
         
     void paint(Graphics& g);
         

@@ -95,6 +95,8 @@ private:
 	int colorScaleFactor;
 	String colorScaleText;
 
+	bool animationIsActive;
+
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerCanvas);
 };

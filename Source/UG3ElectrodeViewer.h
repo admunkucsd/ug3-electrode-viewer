@@ -94,6 +94,8 @@ public:
     }
     
     void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_);
+
+	void loadImpedances();
     
     
 

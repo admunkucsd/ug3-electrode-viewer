@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor_)
-	: node(processor_), isImpedanceOn(false), areElectrodeColorsZeroCentered(false), colorScaleFactor(0), colorScaleText("")
+	: node(processor_), isImpedanceOn(false), areElectrodeColorsZeroCentered(false), colorScaleFactor(0), colorScaleText(""), animationIsActive(false)
 {
     refreshRate = 30;
     
@@ -113,10 +113,12 @@ void UG3ElectrodeViewerCanvas::paint(Graphics& g)
 }
 
 void UG3ElectrodeViewerCanvas::beginAnimation() {
+    animationIsActive = true;
     startCallbacks();
 }
 
 void UG3ElectrodeViewerCanvas::endAnimation() {
+    animationIsActive = false;
     stopCallbacks();
 }
 
@@ -124,16 +126,25 @@ void UG3ElectrodeViewerCanvas::setColorScaleFactor(int scaleFactor, String unitT
     colorScaleFactor = scaleFactor;
     colorScaleText = unitText;
     setDisplayColorRangeText();
+    if (!animationIsActive)
+        refresh();
 }
 
 void UG3ElectrodeViewerCanvas::toggleImpedanceMode(bool isImpedanceOn_) {
+
     isImpedanceOn = isImpedanceOn_;
+    if (isImpedanceOn_) {
+        node->loadImpedances();
+        refresh();
+    }
     
 }
 
 void UG3ElectrodeViewerCanvas::toggleZeroCenter(bool areElectrodeColorsZeroCentered_) {
     areElectrodeColorsZeroCentered = areElectrodeColorsZeroCentered_;
     setDisplayColorRangeText();
+    if (!animationIsActive)
+        refresh();
 }
 
 void UG3ElectrodeViewerCanvas::setDisplayColorRangeText() {

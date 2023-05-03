@@ -45,6 +45,7 @@ private:
     ScopedPointer<ComboBox> impedanceSelector;
     ScopedPointer<UtilityButton> impedanceButton;
     ScopedPointer<UtilityButton> zeroCenterButton;
+    ScopedPointer<UtilityButton> subSelectButton;
 
 
 };

@@ -97,7 +97,8 @@ public:
 
 	void loadImpedances();
     
-    
+    void setSubselectedChannels(int start, int rows, int cols, int colsPerRow);
+
 
 private:
 

@@ -147,6 +147,15 @@ void UG3ElectrodeViewerCanvas::toggleZeroCenter(bool areElectrodeColorsZeroCente
         refresh();
 }
 
+void UG3ElectrodeViewerCanvas::toggleSubselect(bool isSubselectActive) {
+    display -> switchSubselectState(isSubselectActive);
+}
+
+
+void UG3ElectrodeViewerCanvas::setSubselectedChannels(int start, int rows, int cols, int colsPerRow) {
+    node->setSubselectedChannels(start, rows, cols, colsPerRow);
+}
+
 void UG3ElectrodeViewerCanvas::setDisplayColorRangeText() {
     String max = colorScaleText;
     String min = areElectrodeColorsZeroCentered ? String("-") + colorScaleText : String("0");

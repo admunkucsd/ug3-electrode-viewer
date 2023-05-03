@@ -180,3 +180,15 @@ void UG3ElectrodeViewer::loadImpedances() {
     }
 }
 
+void UG3ElectrodeViewer::setSubselectedChannels(int start, int rows, int cols, int colsPerRow) {
+    std::map<String, var> valueMap;
+    valueMap["split"] = 0;
+    valueMap["start"] = start;
+    valueMap["rows"] = rows;
+    valueMap["cols"] = cols;
+    valueMap["colsPerRow"] = colsPerRow;
+    String message = BroadcastParser::build("LFPViewer", "filter", valueMap);
+    broadcastMessage(message);
+}
+
+

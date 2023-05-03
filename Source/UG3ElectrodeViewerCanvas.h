@@ -66,6 +66,10 @@ public:
     void toggleImpedanceMode(bool isImpedanceOn);
 
 	void toggleZeroCenter(bool areElectrodeColorsZeroCentered_);
+    
+    void toggleSubselect(bool isSubselectActive);
+    
+    void setSubselectedChannels(int start, int rows, int cols, int colsPerRow);
 
 
 	/** Called when data acquisition is active**/
@@ -73,9 +77,8 @@ public:
 
 	/** Called when data acquisition ends**/
 	void endAnimation() override;
-
-	void setDisplayColorRangeText();
     
+	void setDisplayColorRangeText();
 
 private:
 

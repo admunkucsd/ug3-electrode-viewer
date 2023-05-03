@@ -37,7 +37,9 @@ private:
 class UG3ElectrodeDisplay : public Component{
 public:
     UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport);
-        
+    
+    void resized();
+
     void refresh(const float * value, bool isZeroCentered, int scaleFactor);
         
     void paint(Graphics& g);
@@ -50,7 +52,31 @@ public:
     
     
     void setColorRangeText(String max, String min);
-
+    
+    void updateSubselectedElectrodes (int start, int rows, int cols, int colsPerRow);
+    
+    void switchSubselectState(bool isSubselectActive_);
+    
+    class DisplayMouseListener : public Component {
+    public:
+        DisplayMouseListener(UG3ElectrodeDisplay* display, int numRows, int numCols);
+        void mouseDown(const MouseEvent & event);
+        void mouseDrag(const MouseEvent & event);
+        void mouseUp(const MouseEvent & event);
+        
+        void calculateElectrodesSelected();
+        void toggleSubselect();
+        
+        void paint(Graphics& g);
+        
+    private:
+        UG3ElectrodeDisplay* display;
+        ScopedPointer<juce::Rectangle<int>> selection;
+        int selectionStartX;
+        int selectionStartY;
+        int numRows;
+        int numCols;        
+    };
     
     
 protected:
@@ -59,9 +85,9 @@ protected:
     const static int SPACING = 4;
     const static int HEIGHT = 8;
     const static int WIDTH = 8;
-    const static int SECTION_SPACING = 9;
-    int filterHorizonatal=8;
-    int filterVertical=8;
+    int subselectHorizonatal=8;
+    int subselectVertical=8;
+    bool isSubselectActive;
     
 private:
     UG3ElectrodeViewerCanvas* canvas;
@@ -71,7 +97,8 @@ private:
     OwnedArray<Electrode> colorRange;
     static const int colorRangeSize;
 
-    OwnedArray<juce::Rectangle<int>> sectionDividers;
+    ScopedPointer<DisplayMouseListener> mouseListener;
+
     
     Colour selectedColor;
     Colour highlightedColor;

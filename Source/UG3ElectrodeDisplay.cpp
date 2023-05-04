@@ -201,7 +201,7 @@ void UG3ElectrodeDisplay::DisplayMouseListener::calculateElectrodesSelected() {
         //Calculate the number of rows by calculating the number of top edges from nTE to bottom left of selection
         int rowsSelected =  selection -> getBottomLeft().getY() > TOP_BOUND && selection -> getY() < maxY ? (std::min((int)selection -> getBottomLeft().getY(), maxY) - (TOP_BOUND + nearestTopEdge*(HEIGHT+SPACING)))/(HEIGHT+SPACING) + 1 : 0;
     
-        display -> updateSubselectedElectrodes(rowsSelected * numCols, rowsSelected, columnsSelected, numCols);
+        display -> updateSubselectedElectrodes(nearestTopEdge * numCols + nearestLeftEdge, rowsSelected, columnsSelected, numCols);
     
 }
 

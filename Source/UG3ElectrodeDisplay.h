@@ -49,7 +49,6 @@ public:
     
     int getTotalWidth() {return totalWidth;}
     
-    
     void setColorRangeText(String max, String min);
     
     void updateSubselectedElectrodes (int start, int rows, int cols, int colsPerRow);
@@ -61,11 +60,13 @@ public:
     class DisplayMouseListener : public Component {
     public:
         DisplayMouseListener(UG3ElectrodeDisplay* display, int numRows, int numCols);
+        void mouseMove(const MouseEvent & event);
         void mouseDown(const MouseEvent & event);
         void mouseDrag(const MouseEvent & event);
         void mouseUp(const MouseEvent & event);
         
         void calculateElectrodesSelected();
+        int calculateElectrodeAtCoordinate(int x, int y);
         void toggleSubselect();
         
         void paint(Graphics& g);
@@ -89,6 +90,9 @@ protected:
     int subselectHorizonatal=8;
     int subselectVertical=8;
     bool isSubselectActive;
+    
+    int hoveredElectrode;
+    int subselectCorner;
     
 private:
     UG3ElectrodeViewerCanvas* canvas;

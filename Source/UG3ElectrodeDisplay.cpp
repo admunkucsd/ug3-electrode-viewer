@@ -24,7 +24,7 @@ const Rectangle<int> Electrode::getRectangle() {
 const int UG3ElectrodeDisplay::colorRangeSize = 32;
 
 
-UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), maxColorRangeText(""), minColorRangeText(""), isSubselectActive(false), numChannelsX(0), numChannelsY(0){
+UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), maxColorRangeText(""), minColorRangeText(""), isSubselectActive(false), numChannelsX(0), numChannelsY(0), subselectCorner(0), hoveredElectrode(0){
     selectedColor = ColourScheme::getColourForNormalizedValue(.9);
 
     
@@ -113,6 +113,12 @@ void UG3ElectrodeDisplay::paint(Graphics& g) {
     g.drawText("Electrode Dimensions: " + String(numChannelsX) + String(" Columns X ") + String(numChannelsY) + String(" Rows"), totalWidth, height, 400, 16, Justification::left);
     height += 16;
     g.drawText("Effective Sample Rate: " + String(canvas->getSampleRate()), totalWidth, height, 400, 16, Justification::left);
+    height += 16;
+    g.drawText("Mouse is over electrode: "+String(hoveredElectrode), totalWidth, height, 400, 16, Justification::left);
+    height += 16;
+    if(isSubselectActive){
+        g.drawText("Subselection Top Left Channel: "+String(subselectCorner), totalWidth, height, 400, 16, Justification::left);
+    }
 }
 
 void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered, int scaleFactor) {
@@ -184,6 +190,15 @@ void UG3ElectrodeDisplay::DisplayMouseListener::paint(Graphics& g){
     }
 }
 
+void UG3ElectrodeDisplay::DisplayMouseListener::mouseMove(const MouseEvent & event) {
+    display->hoveredElectrode = calculateElectrodeAtCoordinate(event.x, event.y);
+    if(display->isSubselectActive) {
+        if(selection)
+            display -> subselectCorner = calculateElectrodeAtCoordinate(selection -> getX(), selection -> getY());
+    }
+    repaint();
+}
+
 void UG3ElectrodeDisplay::DisplayMouseListener::mouseDown(const MouseEvent & event) {
     if(display -> isSubselectActive){
         if(selection -> contains(Point<int>(event.x, event.y))) {
@@ -203,7 +218,9 @@ void UG3ElectrodeDisplay::DisplayMouseListener::mouseDrag(const MouseEvent & eve
             selection -> setX(event.x - selectionStartX);
             selection -> setY(event.y - selectionStartY);
         }
+        display -> subselectCorner = calculateElectrodeAtCoordinate(selection -> getX(), selection -> getY());
     }
+    display->hoveredElectrode = calculateElectrodeAtCoordinate(event.x, event.y);
     repaint();
 }
 
@@ -239,6 +256,16 @@ void UG3ElectrodeDisplay::DisplayMouseListener::calculateElectrodesSelected() {
     
 }
 
+int UG3ElectrodeDisplay::DisplayMouseListener::calculateElectrodeAtCoordinate(int x, int y) {
+    int nearestLeftEdge = std::min(x - LEFT_BOUND >= 0 ? (x - LEFT_BOUND)/(WIDTH+SPACING) : 0, display -> numChannelsX - 1);
+    int nearestTopEdge = std::min(y - TOP_BOUND >= 0 ? (y - TOP_BOUND)/(HEIGHT+SPACING) : 0, display -> numChannelsY - 1);
+    
+    return nearestLeftEdge + nearestTopEdge * display -> numChannelsX;
+    
+
+}
+
+
 void UG3ElectrodeDisplay::DisplayMouseListener::toggleSubselect() {
     if(!(display-> isSubselectActive)) {
         if(selection)
@@ -253,6 +280,7 @@ void UG3ElectrodeDisplay::DisplayMouseListener::toggleSubselect() {
         height = display->subselectVertical*(HEIGHT+SPACING) - SPACING;
         selection = new Rectangle<int>(startX,startY,width,height);
         calculateElectrodesSelected();
+        display -> subselectCorner = calculateElectrodeAtCoordinate(selection -> getX(), selection -> getY());
     }
     repaint();
 }

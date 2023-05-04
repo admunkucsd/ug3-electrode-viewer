@@ -124,10 +124,10 @@ void UG3ElectrodeViewerToolbar::resized(){
     zeroCenterButton->setBounds(impedanceButton->getRight() + 50, getHeight() - 30, 60, 22);
     subSelectButton->setBounds(zeroCenterButton->getRight() + 50, getHeight() - 30, 60, 22);
     
-    subselectHorDecButton->setBounds(subSelectButton->getRight() + 50, getHeight() - 30, 60, 22);
+    subselectHorDecButton->setBounds(subSelectButton->getRight() + 30, getHeight() - 30, 60, 22);
     subselectHorIncButton->setBounds(subselectHorDecButton->getRight(), getHeight() - 30, 60, 22);
     
-    subselectVertDecButton->setBounds(subselectHorIncButton->getRight() + 50, getHeight() - 30, 60, 22);
+    subselectVertDecButton->setBounds(subselectHorIncButton->getRight() + 30, getHeight() - 30, 60, 22);
     subselectVertIncButton->setBounds(subselectVertDecButton->getRight(), getHeight() - 30, 60, 22);
 
 

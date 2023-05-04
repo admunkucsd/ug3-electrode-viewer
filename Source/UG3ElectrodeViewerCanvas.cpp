@@ -166,6 +166,9 @@ void UG3ElectrodeViewerCanvas::updateSubselectWindow(subselectWindowOptions opti
     display -> updateSubselectWindow(option);
 }
 
+String UG3ElectrodeViewerCanvas::getSampleRate(){
+    return String(node->getSampleRate());
+}
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
 UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}

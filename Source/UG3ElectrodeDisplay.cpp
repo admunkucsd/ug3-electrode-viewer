@@ -102,7 +102,17 @@ void UG3ElectrodeDisplay::paint(Graphics& g) {
 
     g.drawText(maxColorRangeText, colorRange[colorRangeSize - 1]->getRectangle().getRight(), colorRange[colorRangeSize - 1]->getRectangle().getY(), 400, 16, Justification::left);
     g.drawText(minColorRangeText, colorRange[1]->getRectangle().getRight(), colorRange[1]->getRectangle().getY(), 400, 16, Justification::left);
-
+    
+    g.setColour(Colours::black);
+    int height = TOP_BOUND;
+    g.setFont(16);
+    g.drawText("Electrode Name: ", totalWidth, height, 400, 16, Justification::left);
+    height += 16;
+    g.drawText("Recording Device Serial Number: ", totalWidth, height, 400, 16, Justification::left);
+    height += 16;
+    g.drawText("Electrode Dimensions: " + String(numChannelsX) + String(" Columns X ") + String(numChannelsY) + String(" Rows"), totalWidth, height, 400, 16, Justification::left);
+    height += 16;
+    g.drawText("Effective Sample Rate: " + String(canvas->getSampleRate()), totalWidth, height, 400, 16, Justification::left);
 }
 
 void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered, int scaleFactor) {

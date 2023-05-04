@@ -83,6 +83,8 @@ public:
     /** Changes the selected stream */
     void setParameter(int index, float value) override;
     
+    bool startAcquisition() override;
+        
     void requestElectrodeLayout();
     
     const float* getLatestValues() {
@@ -92,6 +94,8 @@ public:
     const float* getImpedanceMagnitudes() {
         return impedanceValues.getRawDataPointer();
     }
+    
+    float getSampleRate() {return effectiveSampleRate;}
     
     void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_);
 
@@ -105,7 +109,9 @@ private:
     Array<float> currentValues;
     Array<float> impedanceValues;
 
-
+    float effectiveSampleRate;
+    int totalSamples;
+    uint16_t lastTimerCallback;
     
     uint16 currentStream;
     

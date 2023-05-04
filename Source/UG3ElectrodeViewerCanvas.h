@@ -84,6 +84,8 @@ public:
 	void setDisplayColorRangeText();
     
     void updateSubselectWindow(subselectWindowOptions option);
+    
+    String getSampleRate();
 
 private:
 

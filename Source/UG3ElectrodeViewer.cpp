@@ -27,7 +27,7 @@
 
 
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
-    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0)
+    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0), totalSamples(0), lastTimerCallback(0), effectiveSampleRate(0)
 {
     isEnabled = false;
 }
@@ -68,6 +68,19 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
             count++;
         }
     }
+    int64 current = int64(Time::highResolutionTicksToSeconds(Time::getHighResolutionTicks()) * 1e6);
+
+    float sampleRate = getDataStream(currentStream) -> getSampleRate();
+    totalSamples += buffer.getNumSamples();
+    if(totalSamples >= sampleRate) {
+        int64 currentTime = Time::getHighResolutionTicks();
+        int64 timeElapsed = int64(Time::highResolutionTicksToSeconds(currentTime - lastTimerCallback)*1e6);
+        effectiveSampleRate = float(totalSamples)/(float(timeElapsed)/1e6);
+        
+        totalSamples = totalSamples - sampleRate;
+        lastTimerCallback = currentTime;
+    }
+    
     
 }
 
@@ -78,6 +91,13 @@ void UG3ElectrodeViewer::setParameter(int index, float value)
     }
 }
 
+bool UG3ElectrodeViewer::startAcquisition() {
+    lastTimerCallback = Time::getHighResolutionTicks();
+    
+    effectiveSampleRate = 0;
+    
+    totalSamples = 0;
+}
 
 void UG3ElectrodeViewer::handleTTLEvent(TTLEventPtr event)
 {

@@ -68,16 +68,15 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
             count++;
         }
     }
-    int64 current = int64(Time::highResolutionTicksToSeconds(Time::getHighResolutionTicks()) * 1e6);
 
     float sampleRate = getDataStream(currentStream) -> getSampleRate();
-    totalSamples += buffer.getNumSamples();
+    totalSamples += getNumSamplesInBlock(currentStream);
     if(totalSamples >= sampleRate) {
         int64 currentTime = Time::getHighResolutionTicks();
         int64 timeElapsed = int64(Time::highResolutionTicksToSeconds(currentTime - lastTimerCallback)*1e6);
         effectiveSampleRate = float(totalSamples)/(float(timeElapsed)/1e6);
         
-        totalSamples = totalSamples - sampleRate;
+        totalSamples = 0;
         lastTimerCallback = currentTime;
     }
     
@@ -97,6 +96,8 @@ bool UG3ElectrodeViewer::startAcquisition() {
     effectiveSampleRate = 0;
     
     totalSamples = 0;
+
+    return true;
 }
 
 void UG3ElectrodeViewer::handleTTLEvent(TTLEventPtr event)

@@ -111,7 +111,7 @@ private:
 
     float effectiveSampleRate;
     int totalSamples;
-    uint16_t lastTimerCallback;
+    int64 lastTimerCallback;
     
     uint16 currentStream;
     

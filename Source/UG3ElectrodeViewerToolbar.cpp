@@ -29,7 +29,7 @@ String UG3ElectrodeViewerToolbar::calculateMetricString(int value, String unit, 
 
 
 const std::vector<int> UG3ElectrodeViewerToolbar::voltageOptions = { 1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000 };
-const std::vector<int> UG3ElectrodeViewerToolbar::impedanceOptions = { 1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000 };
+const std::vector<int> UG3ElectrodeViewerToolbar::impedanceOptions = {100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 50000000 };
 
 UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* canvas) : canvas(canvas){
     
@@ -75,7 +75,7 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
 
     impedanceSelector = new ComboBox("Impedance Selector");
     i = 0;
-    for (auto option : voltageOptions) {
+    for (auto option : impedanceOptions) {
         //unit offset of 2 because impedance will be in Ohms (0th metric string in micro)
         impedanceSelector->addItem(calculateMetricString(option, "Ohm", 2), i + 1);
         i++;

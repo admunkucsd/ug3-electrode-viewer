@@ -162,6 +162,10 @@ void UG3ElectrodeViewerCanvas::setDisplayColorRangeText() {
     display->setColorRangeText(max, min);
 }
 
+void UG3ElectrodeViewerCanvas::updateSubselectWindow(subselectWindowOptions option){
+    display -> updateSubselectWindow(option);
+}
+
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
 UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}

@@ -24,7 +24,7 @@ const Rectangle<int> Electrode::getRectangle() {
 const int UG3ElectrodeDisplay::colorRangeSize = 32;
 
 
-UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), maxColorRangeText(""), minColorRangeText(""), isSubselectActive(false){
+UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewport* viewport) : canvas(canvas), viewport(viewport), totalHeight(0), totalWidth(0), maxColorRangeText(""), minColorRangeText(""), isSubselectActive(false), numChannelsX(0), numChannelsY(0){
     selectedColor = ColourScheme::getColourForNormalizedValue(.9);
 
     
@@ -75,6 +75,9 @@ void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std
     mouseListener -> setBounds(0,0, getWidth(), getHeight());
     addAndMakeVisible(mouseListener);
     mouseListener -> toFront(true);
+    
+    numChannelsX = layoutMaxX;
+    numChannelsY = layoutMaxY;
     
     repaint();
 
@@ -136,6 +139,27 @@ void UG3ElectrodeDisplay::switchSubselectState(bool isSubselectActive_) {
     isSubselectActive = isSubselectActive_;
     mouseListener -> toggleSubselect();
 }
+
+void UG3ElectrodeDisplay::updateSubselectWindow(subselectWindowOptions option) {
+    switch (option) {
+        case subselectWindowOptions::HorDec:
+            subselectHorizonatal = subselectHorizonatal > 1 ? subselectHorizonatal - 1 : 1;
+            break;
+        case subselectWindowOptions::HorInc:
+            subselectHorizonatal = subselectHorizonatal < numChannelsX ? subselectHorizonatal + 1 : subselectHorizonatal;
+            break;
+        case subselectWindowOptions::VertDec:
+            subselectVertical = subselectVertical > 1 ? subselectVertical - 1 : 1;
+            break;
+        case subselectWindowOptions::VertInc:
+            subselectVertical = subselectVertical < numChannelsY ? subselectVertical + 1 : subselectVertical;
+            break;
+        default:
+            break;
+    }
+    mouseListener->toggleSubselect();
+}
+
 
 UG3ElectrodeDisplay::DisplayMouseListener::DisplayMouseListener(UG3ElectrodeDisplay* display, int numRows, int numCols) : display (display), numRows(numRows), numCols(numCols) {}
 

@@ -15,8 +15,7 @@
 #include <set>
 
 #include "ColourScheme.h"
-
-class UG3ElectrodeViewerCanvas;
+#include "UG3ElectrodeViewerCanvas.h"
 
 class Electrode : public Component
 {
@@ -56,6 +55,8 @@ public:
     void updateSubselectedElectrodes (int start, int rows, int cols, int colsPerRow);
     
     void switchSubselectState(bool isSubselectActive_);
+    
+    void updateSubselectWindow(subselectWindowOptions option);
     
     class DisplayMouseListener : public Component {
     public:
@@ -99,6 +100,8 @@ private:
 
     ScopedPointer<DisplayMouseListener> mouseListener;
 
+    int numChannelsX;
+    int numChannelsY;
     
     Colour selectedColor;
     Colour highlightedColor;

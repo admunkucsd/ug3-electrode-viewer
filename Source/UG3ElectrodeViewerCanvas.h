@@ -31,6 +31,9 @@ class UG3ElectrodeViewer;
 class UG3ElectrodeDisplay;
 
 class UG3ElectrodeViewerToolbar;
+
+enum subselectWindowOptions {HorDec, HorInc, VertDec, VertInc};
+
 /**
 * 
 	Draws data in real time
@@ -79,6 +82,8 @@ public:
 	void endAnimation() override;
     
 	void setDisplayColorRangeText();
+    
+    void updateSubselectWindow(subselectWindowOptions option);
 
 private:
 

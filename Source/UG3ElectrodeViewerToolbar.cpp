@@ -33,7 +33,7 @@ const std::vector<int> UG3ElectrodeViewerToolbar::impedanceOptions = { 1, 5, 10,
 
 UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* canvas) : canvas(canvas){
     
-    impedanceButton = new UtilityButton("Impedance Button", Font("Default", "Plain", 15));
+    impedanceButton = new UtilityButton("OFF", Font("Default", "Plain", 15));
     impedanceButton->setRadius(5.0f);
     impedanceButton->setEnabledState(true);
     impedanceButton->setCorners(true, true, true, true);
@@ -42,7 +42,7 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     impedanceButton->setToggleState(false, sendNotification);
     addAndMakeVisible(impedanceButton);
 
-    zeroCenterButton = new UtilityButton("Zero Center Button", Font("Default", "Plain", 15));
+    zeroCenterButton = new UtilityButton("OFF", Font("Default", "Plain", 15));
     zeroCenterButton->setRadius(5.0f);
     zeroCenterButton->setEnabledState(true);
     zeroCenterButton->setCorners(true, true, true, true);
@@ -51,7 +51,7 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     zeroCenterButton->setToggleState(false, sendNotification);
     addAndMakeVisible(zeroCenterButton);
     
-    subSelectButton = new UtilityButton("Subselect Button", Font("Default", "Plain", 15));
+    subSelectButton = new UtilityButton("OFF", Font("Default", "Plain", 15));
     subSelectButton->setRadius(5.0f);
     subSelectButton->setEnabledState(true);
     subSelectButton->setCorners(true, true, true, true);
@@ -82,6 +82,34 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     }
     impedanceSelector->setSelectedId(1, dontSendNotification);
     impedanceSelector->addListener(this);
+    
+    subselectHorDecButton = new UtilityButton("-", Font("Default", "Plain", 15));
+    subselectHorDecButton->setRadius(5.0f);
+    subselectHorDecButton->setEnabledState(true);
+    subselectHorDecButton->setCorners(true, true, true, true);
+    subselectHorDecButton->addListener(this);
+    addAndMakeVisible(subselectHorDecButton);
+    
+    subselectHorIncButton = new UtilityButton("+", Font("Default", "Plain", 15));
+    subselectHorIncButton->setRadius(5.0f);
+    subselectHorIncButton->setEnabledState(true);
+    subselectHorIncButton->setCorners(true, true, true, true);
+    subselectHorIncButton->addListener(this);
+    addAndMakeVisible(subselectHorIncButton);
+    
+    subselectVertDecButton = new UtilityButton("-", Font("Default", "Plain", 15));
+    subselectVertDecButton->setRadius(5.0f);
+    subselectVertDecButton->setEnabledState(true);
+    subselectVertDecButton->setCorners(true, true, true, true);
+    subselectVertDecButton->addListener(this);
+    addAndMakeVisible(subselectVertDecButton);
+    
+    subselectVertIncButton = new UtilityButton("+", Font("Default", "Plain", 15));
+    subselectVertIncButton->setRadius(5.0f);
+    subselectVertIncButton->setEnabledState(true);
+    subselectVertIncButton->setCorners(true, true, true, true);
+    subselectVertIncButton->addListener(this);
+    addAndMakeVisible(subselectVertIncButton);
 
 }
 
@@ -95,7 +123,12 @@ void UG3ElectrodeViewerToolbar::resized(){
     impedanceButton->setBounds(voltageSelector -> getRight() + 10, getHeight() - 30, 60, 22);
     zeroCenterButton->setBounds(impedanceButton->getRight() + 50, getHeight() - 30, 60, 22);
     subSelectButton->setBounds(zeroCenterButton->getRight() + 50, getHeight() - 30, 60, 22);
-
+    
+    subselectHorDecButton->setBounds(subSelectButton->getRight() + 50, getHeight() - 30, 60, 22);
+    subselectHorIncButton->setBounds(subselectHorDecButton->getRight(), getHeight() - 30, 60, 22);
+    
+    subselectVertDecButton->setBounds(subselectHorIncButton->getRight() + 50, getHeight() - 30, 60, 22);
+    subselectVertIncButton->setBounds(subselectVertDecButton->getRight(), getHeight() - 30, 60, 22);
 
 
 }
@@ -110,6 +143,9 @@ void UG3ElectrodeViewerToolbar::paint(Graphics& g){
     g.drawText("Zero Center (+/-)", zeroCenterButton->getX(), zeroCenterButton->getY() - 22, 300, 20, Justification::left, false);
     g.drawText("Subselect", subSelectButton->getX(), subSelectButton->getY() - 22, 300, 20, Justification::left, false);
    
+    g.drawText("Subselect Horizontal", subselectHorDecButton->getX(), subselectHorDecButton->getY() - 22, 300, 20, Justification::left, false);
+    g.drawText("Subselect Vertical", subselectVertDecButton->getX(), subselectVertDecButton->getY() - 22, 300, 20, Justification::left, false);
+
 
 }
 
@@ -150,6 +186,18 @@ void UG3ElectrodeViewerToolbar::buttonClicked (Button* button){
         static_cast<UtilityButton*>(button)->setLabel(button->getToggleState() ? "ON" : "OFF");
         resized();
         return;
+    }
+    else if (button == subselectHorIncButton){
+        canvas -> updateSubselectWindow(subselectWindowOptions::HorInc);
+    }
+    else if (button == subselectHorDecButton){
+        canvas -> updateSubselectWindow(subselectWindowOptions::HorDec);
+    }
+    else if (button == subselectVertIncButton){
+        canvas -> updateSubselectWindow(subselectWindowOptions::VertInc);
+    }
+    else if (button == subselectVertDecButton){
+        canvas -> updateSubselectWindow(subselectWindowOptions::VertDec);
     }
 }
 

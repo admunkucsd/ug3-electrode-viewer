@@ -46,6 +46,11 @@ private:
     ScopedPointer<UtilityButton> impedanceButton;
     ScopedPointer<UtilityButton> zeroCenterButton;
     ScopedPointer<UtilityButton> subSelectButton;
+    
+    ScopedPointer<UtilityButton> subselectVertIncButton;
+    ScopedPointer<UtilityButton> subselectVertDecButton;
+    ScopedPointer<UtilityButton> subselectHorIncButton;
+    ScopedPointer<UtilityButton> subselectHorDecButton;
 
 
 };

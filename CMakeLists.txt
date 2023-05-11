@@ -137,8 +137,9 @@ else()
 	find_library(TEST_HELPERS_D NAMES test_helpers HINTS "${GUI_TEST_BIN_COMMON_DIR}/Debug" REQUIRED)
 
 endif()
-
+target_compile_definitions(${PLUGIN_NAME}_testable PRIVATE -DBUILD_TESTS)
 target_link_libraries(${PLUGIN_NAME}_testable ${FRONT_PANEL_LIBRARY} optimized ${GUI_TESTABLE_SOURCE} debug ${GUI_TESTABLE_SOURCE_D})
+target_compile_definitions(${PLUGIN_NAME}_tests PRIVATE -DBUILD_TESTS -DTEST_RUNNER)
 target_link_libraries(${PLUGIN_NAME}_tests PRIVATE ${PLUGIN_NAME}_testable gtest_main optimized ${TEST_HELPERS} debug ${TEST_HELPERS_D} PUBLIC optimized ${GUI_TESTABLE_SOURCE} debug ${GUI_TESTABLE_SOURCE_D})
 target_include_directories(${PLUGIN_NAME}_tests PRIVATE ${GUI_TEST_HELPERS_DIR}/include)
 add_test(NAME ${PLUGIN_NAME}_tests  COMMAND ${PLUGIN_NAME}_tests)

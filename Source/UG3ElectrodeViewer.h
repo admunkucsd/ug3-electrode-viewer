@@ -33,7 +33,7 @@
 	or an extended settings interface.
 */
 
-class UG3ElectrodeViewer : public GenericProcessor
+class TESTABLE UG3ElectrodeViewer : public GenericProcessor
 {
 public:
 	/** The class constructor, used to initialize any members.*/

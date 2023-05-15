@@ -126,16 +126,9 @@ String UG3ElectrodeViewer::handleConfigMessage(String message) {
         if(!BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxX", tempLayoutMaxX, 0) || !BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxY", tempLayoutMaxY, 0)) {
             return "";
         }
-        layoutMaxX = tempLayoutMaxX;
-        layoutMaxY = tempLayoutMaxY;
+        setLayoutParameters(tempLayoutMaxX, tempLayoutMaxY, tempLayout);
         editor -> updateVisualizer();
         isEnabled = true;
-        currentValues.clear();
-        currentValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
-        impedanceValues.clear();
-        impedanceValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
-
-
     }
     else if (BroadcastParser::checkForCommand("", "IMPEDANCESREADY", message, payload)) {
         loadImpedances();
@@ -181,6 +174,17 @@ void UG3ElectrodeViewer::requestElectrodeLayout() {
     
 }
 
+void UG3ElectrodeViewer::setLayoutParameters(int layoutMaxX_, int layoutMaxY_, const std::vector<int>& layout_) {
+    layoutMaxX = layoutMaxX_;
+    layoutMaxY = layoutMaxY_;
+    layout = layout_;
+    currentValues.clear();
+    currentValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
+    impedanceValues.clear();
+    impedanceValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
+}
+
+
 void UG3ElectrodeViewer::getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_){
     layoutMaxX_ = layoutMaxX;
     layoutMaxY_ = layoutMaxY;
@@ -211,5 +215,7 @@ void UG3ElectrodeViewer::setSubselectedChannels(int start, int rows, int cols, i
     String message = BroadcastParser::build("LFPViewer", "filter", valueMap);
     broadcastMessage(message);
 }
+
+
 
 

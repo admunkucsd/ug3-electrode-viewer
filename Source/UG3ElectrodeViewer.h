@@ -97,6 +97,8 @@ public:
     
     float getSampleRate() {return effectiveSampleRate;}
     
+    void setLayoutParameters(int layoutMaxX_, int layoutMaxY_, const std::vector<int>& layout_);
+    
     void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_);
 
 	void loadImpedances();

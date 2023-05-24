@@ -61,7 +61,7 @@ protected:
             0);
         MidiBuffer eventBuffer;
         eventBuffer.addEvent(data, dataSize, 0);
-
+        
         auto original_buffer = buffer;
         audio_processor->processBlock(buffer, eventBuffer);
         // Assert the buffer hasn't changed after process()

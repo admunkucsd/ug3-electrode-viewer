@@ -31,7 +31,7 @@ namespace ColourScheme
      *  clipping at the bounds. The color mapping used can be set using
      *  ColourScheme::setColourScheme
      */
-    Colour getColourForNormalizedValue(float val);
+    TESTABLE Colour getColourForNormalizedValue(float val);
 
     /**
      *  Get the color mapping for a given value, with a specific ColourSchemeId and

@@ -39,7 +39,7 @@ enum subselectWindowOptions {HorDec, HorInc, VertDec, VertInc};
 	Draws data in real time
 
 */
-class UG3ElectrodeViewerCanvas : public Visualizer
+class TESTABLE UG3ElectrodeViewerCanvas : public Visualizer
 {
 public:
 

@@ -83,8 +83,14 @@ void UG3ElectrodeViewerCanvas::update()
     int layoutMaxX;
     int layoutMaxY;
     std::vector<int> layout;
-    node -> getLayoutParameters(layoutMaxX, layoutMaxY, layout);
-    display -> setElectrodeLayout(layoutMaxX, layoutMaxY, layout);
+    int probeCols;
+    node -> getLayoutParameters(layoutMaxX, layoutMaxY, layout, probeCols);
+    if(probeCols > 0) {
+        display -> setProbeLayout(layoutMaxX, layoutMaxY, probeCols);
+    }
+    else {
+        display -> setGridLayout(layoutMaxX, layoutMaxY, layout);
+    }
     toolbar->resized();
 }
 

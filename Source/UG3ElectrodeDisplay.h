@@ -43,7 +43,9 @@ public:
         
     void paint(Graphics& g);
         
-    void setElectrodeLayout(int layoutXMax, int layoutYMax, std::vector<int> layout);
+    void setGridLayout(int layoutXMax, int layoutYMax, std::vector<int> layout);
+    
+    void setProbeLayout(int layoutX, int layoutY, int probeCols);
     
     int getTotalHeight() {return totalHeight;}
     

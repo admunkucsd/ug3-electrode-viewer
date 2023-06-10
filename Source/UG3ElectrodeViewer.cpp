@@ -27,7 +27,7 @@
 
 
 UG3ElectrodeViewer::UG3ElectrodeViewer() 
-    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0), totalSamples(0), lastTimerCallback(0), effectiveSampleRate(0)
+    : GenericProcessor("UG3 Electrode Viewer"), layoutMaxX(0), layoutMaxY(0), currentStream(0), totalSamples(0), lastTimerCallback(0), effectiveSampleRate(0), probeCols(0)
 {
     isEnabled = false;
 }
@@ -48,6 +48,7 @@ AudioProcessorEditor* UG3ElectrodeViewer::createEditor()
 
 void UG3ElectrodeViewer::updateSettings()
 {
+    std::cout << "requesting layout" << std::endl;
     requestElectrodeLayout();
 
 
@@ -123,10 +124,22 @@ String UG3ElectrodeViewer::handleConfigMessage(String message) {
         int tempLayoutMaxX;
         int tempLayoutMaxY;
         std::vector<int> tempLayout;
+        int tempProbeCols = 0;
         if(!BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxX", tempLayoutMaxX, 0) || !BroadcastParser::getIntField(payload.getDynamicObject(), "layoutMaxY", tempLayoutMaxY, 0)) {
             return "";
         }
-        setLayoutParameters(tempLayoutMaxX, tempLayoutMaxY, tempLayout);
+        String electrodeType;
+        
+        if (payload.getDynamicObject()->hasProperty("type") && payload.getDynamicObject()->getProperty("type").isString()) {
+            electrodeType = payload.getDynamicObject()->getProperty("type");
+            BroadcastParser::getIntField(payload.getDynamicObject(), "colsPerProbe", tempProbeCols, 0);
+            
+            int swapVal = tempLayoutMaxX;
+            tempLayoutMaxX = tempLayoutMaxY;
+            tempLayoutMaxY = swapVal;
+        }
+        
+        setLayoutParameters(tempLayoutMaxX, tempLayoutMaxY, tempLayout, tempProbeCols);
         editor -> updateVisualizer();
         isEnabled = true;
     }
@@ -160,7 +173,6 @@ void UG3ElectrodeViewer::requestElectrodeLayout() {
     while(sn -> sourceNode != nullptr) {
         sn = sn -> sourceNode;
     }
-    
     if(!(sn -> isSource())) {
 
         return;
@@ -169,12 +181,11 @@ void UG3ElectrodeViewer::requestElectrodeLayout() {
     payload["requestNodeId"] = getNodeId();
 
     String message = BroadcastParser::build("", "GETELECTRODELAYOUT", payload);
-
     sendConfigMessage(sn, message);
     
 }
 
-void UG3ElectrodeViewer::setLayoutParameters(int layoutMaxX_, int layoutMaxY_, const std::vector<int>& layout_) {
+void UG3ElectrodeViewer::setLayoutParameters(int layoutMaxX_, int layoutMaxY_, const std::vector<int>& layout_, int probeCols_) {
     layoutMaxX = layoutMaxX_;
     layoutMaxY = layoutMaxY_;
     layout = layout_;
@@ -182,13 +193,15 @@ void UG3ElectrodeViewer::setLayoutParameters(int layoutMaxX_, int layoutMaxY_, c
     currentValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
     impedanceValues.clear();
     impedanceValues.insertMultiple(0, 0, layoutMaxX * layoutMaxY);
+    probeCols = probeCols_;
 }
 
 
-void UG3ElectrodeViewer::getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_){
+void UG3ElectrodeViewer::getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_, int& probeCols_){
     layoutMaxX_ = layoutMaxX;
     layoutMaxY_ = layoutMaxY;
     layout_ = layout;
+    probeCols_ = probeCols;
 }
 
 void UG3ElectrodeViewer::loadImpedances() {

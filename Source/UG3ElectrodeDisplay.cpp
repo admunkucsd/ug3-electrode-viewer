@@ -30,12 +30,13 @@ UG3ElectrodeDisplay::UG3ElectrodeDisplay(UG3ElectrodeViewerCanvas* canvas, Viewp
     
 }
 
-void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std::vector<int> layout) {
+void UG3ElectrodeDisplay::setGridLayout(int layoutMaxX, int layoutMaxY, std::vector<int> layout) {
     int newTotalHeight = 0;
     const int totalPixels = layoutMaxX * layoutMaxY;
     int layoutIndex = 0;
     newTotalHeight = TOP_BOUND;
     electrodes.clear();
+    colorRange.clear();
         for (int i = 0; i < totalPixels; i++)
     {
         
@@ -82,6 +83,62 @@ void UG3ElectrodeDisplay::setElectrodeLayout(int layoutMaxX, int layoutMaxY, std
     repaint();
 
 }
+
+void UG3ElectrodeDisplay::setProbeLayout(int layoutX, int layoutY, int probeCols) {
+    int newTotalHeight = 0;
+    const int totalPixels = layoutX * layoutY;
+    
+    newTotalHeight = TOP_BOUND;
+    electrodes.clear();
+    colorRange.clear();
+    
+    int electrodesPerProbe = layoutY * probeCols;
+    for (int i = 0; i < totalPixels; i++)
+    {
+        
+        int probeIndex = i/electrodesPerProbe;
+        
+        int column = probeIndex * probeCols + i % probeCols;
+        int row = (i - probeIndex * electrodesPerProbe)/probeCols;
+        int L = LEFT_BOUND + column * (WIDTH + SPACING) + probeIndex * (WIDTH + SPACING);
+        int T = TOP_BOUND + row * (HEIGHT + SPACING);
+            
+        if(column == 0) {
+            newTotalHeight += HEIGHT + SPACING;
+        }
+        
+        if(row == 0 && column == layoutX - 1) {
+            totalWidth = L + WIDTH + SPACING;
+        }
+        
+        Electrode* e = new Electrode(Rectangle<int>(L, T, WIDTH, HEIGHT));
+        e -> setColour(selectedColor);
+        electrodes.add(e);
+        
+    }
+
+        
+    totalHeight = newTotalHeight + TOP_BOUND - SPACING;
+    
+    jassert(colorRangeSize > 1);
+
+    for (int i = 0; i < colorRangeSize; i++) {
+        Electrode* e = new Electrode(Rectangle<int>(totalWidth, totalHeight - TOP_BOUND - HEIGHT * (i + 1), WIDTH, HEIGHT));
+        e->setColour(ColourScheme::getColourForNormalizedValue((float)(i) / float(colorRangeSize)));
+        colorRange.add(e);
+    }
+    
+    mouseListener = new DisplayMouseListener(this, layoutX, layoutY);
+    mouseListener -> setBounds(0,0, getWidth(), getHeight());
+
+    
+    numChannelsX = layoutX;
+    numChannelsY = layoutY;
+    
+    repaint();
+
+}
+
 
 void UG3ElectrodeDisplay::resized() {
     

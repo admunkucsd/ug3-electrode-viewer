@@ -49,17 +49,14 @@ void UG3ElectrodeViewerEditor::comboBoxChanged(ComboBox* cb)
 {
     if (cb == streamSelection.get())
     {
-        uint16 selectedStream = cb->getSelectedId();
-
-        if (selectedStream > 0)
-            setDrawableStream(selectedStream);
+        setDrawableStream(cb->getText());
     }
 
 }
 
 void UG3ElectrodeViewerEditor::updateSettings()
-{
-    updateStreamSelectorOptions();
+{updateStreamSelectorOptions
+    ();
 }
 
 void UG3ElectrodeViewerEditor::updateStreamSelectorOptions()
@@ -70,12 +67,11 @@ void UG3ElectrodeViewerEditor::updateStreamSelectorOptions()
     streamSelection->clear(dontSendNotification);
 
     // Add all datastreams to combobox
-    for (auto stream : electrodeViewerNode -> getDataStreams())
+    int count = 1;
+    for (const auto& stream : electrodeViewerNode -> getAvailableStreams())
     {
-        uint16 streamID = stream->getStreamId();
 
-        streamSelection->addItem("[" + String(stream->getSourceNodeId()) + "] " +
-            stream->getName(), streamID);
+        streamSelection->addItem(stream, count++);
 
     }
 
@@ -85,28 +81,16 @@ void UG3ElectrodeViewerEditor::updateStreamSelectorOptions()
     }
     else
     {
-        if (streamSelection->getNumItems() > 0)
+        if (streamSelection->getNumItems() > 0) {
             streamSelection->setSelectedItemIndex(0, sendNotification);
+        }
     }
 
 }
 
-void UG3ElectrodeViewerEditor::setDrawableStream(uint16 streamId)
+void UG3ElectrodeViewerEditor::setDrawableStream(String streamName)
 {
-
-
-    electrodeViewerNode->setParameter(0, streamId);
-
-    if (canvas != nullptr)
-    {
-        UG3ElectrodeViewerCanvas* c = (UG3ElectrodeViewerCanvas*)canvas.get();
-
-        DataStream* stream = electrodeViewerNode->getDataStream(streamId);
-
-//        if (stream != nullptr)
-            //c->updateDataStream(stream);
-    }
-        
+    electrodeViewerNode->setCurrentStreamName(streamName);
 }
 
 

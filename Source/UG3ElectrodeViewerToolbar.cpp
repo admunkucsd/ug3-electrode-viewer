@@ -8,9 +8,6 @@
 #include "UG3ElectrodeViewerToolbar.h"
 #include "UG3ElectrodeViewerCanvas.h"
 
-
-
-
 String UG3ElectrodeViewerToolbar::calculateMetricString(int value, String unit, int prefixShiftsOffset) {
     std::vector<String> metricPrefixes = { "u", "m", "", "K", "M" };
     int prefixShifts = 0;
@@ -111,13 +108,23 @@ UG3ElectrodeViewerToolbar::UG3ElectrodeViewerToolbar(UG3ElectrodeViewerCanvas* c
     subselectVertIncButton->addListener(this);
     addAndMakeVisible(subselectVertIncButton);
 
+    loadLayoutButton = new UtilityButton("Load", Font("Default", "Plain", 15));
+    loadLayoutButton->setRadius(5.0f);
+    loadLayoutButton->setEnabledState(true);
+    loadLayoutButton->setCorners(true, true, true, true);
+    loadLayoutButton->addListener(this);
+    addAndMakeVisible(loadLayoutButton);
+
 }
 
 UG3ElectrodeViewerToolbar::~UG3ElectrodeViewerToolbar(){}
 
 void UG3ElectrodeViewerToolbar::resized(){
     int leftEdge = 8;
-
+    for(auto button : acquisitionButtons) {
+        button->setBounds(leftEdge, getHeight() - 30, 100, 22);
+        leftEdge = button->getRight();
+    }
     voltageSelector->setBounds(leftEdge + 10, getHeight() - 30, 160, 22);
     impedanceSelector->setBounds(leftEdge + 10, getHeight() - 30, 160, 22);
     impedanceButton->setBounds(voltageSelector -> getRight() + 10, getHeight() - 30, 60, 22);
@@ -130,6 +137,7 @@ void UG3ElectrodeViewerToolbar::resized(){
     subselectVertDecButton->setBounds(subselectHorIncButton->getRight() + 30, getHeight() - 30, 60, 22);
     subselectVertIncButton->setBounds(subselectVertDecButton->getRight(), getHeight() - 30, 60, 22);
 
+    loadLayoutButton->setBounds(subselectVertIncButton -> getRight() + 10, getHeight() - 30, 60, 22);
 
 }
 
@@ -137,6 +145,9 @@ void UG3ElectrodeViewerToolbar::paint(Graphics& g){
     g.fillAll(Colours::black);
     g.setColour(Colour(100,100,100));
     g.setFont(Font("Fira Sans", 16, Font::plain));
+    if(acquisitionButtons.size() > 0) {
+        g.drawText("Mode", acquisitionButtons.getFirst()->getX(), acquisitionButtons.getFirst()->getY() - 22, 300, 20, Justification::left, false);
+    }
     String selectorText = impedanceButton->getToggleState() ? "Impedance Selector (Ohms)" : "Voltage Selector (V)";
     g.drawText(selectorText, voltageSelector->getX(), voltageSelector->getY()-22, 300, 20, Justification::left, false);
     g.drawText("Impedance Mode", impedanceButton->getX(), impedanceButton->getY()-22, 300, 20, Justification::left, false);
@@ -145,6 +156,8 @@ void UG3ElectrodeViewerToolbar::paint(Graphics& g){
    
     g.drawText("Subselect Horizontal", subselectHorDecButton->getX(), subselectHorDecButton->getY() - 22, 300, 20, Justification::left, false);
     g.drawText("Subselect Vertical", subselectVertDecButton->getX(), subselectVertDecButton->getY() - 22, 300, 20, Justification::left, false);
+
+    g.drawText("Layout File", loadLayoutButton->getX(), loadLayoutButton->getY() - 22, 300, 20, Justification::left, false);
 
 
 }
@@ -159,7 +172,12 @@ void UG3ElectrodeViewerToolbar::comboBoxChanged (ComboBox* combo){
 }
 
 void UG3ElectrodeViewerToolbar::buttonClicked (Button* button){
-
+    for(int i = 0; i < acquisitionButtons.size(); i++) {
+        if(button == acquisitionButtons[i]) {
+            canvas -> updateSourceAcquisitionCapability(button->getButtonText());
+            return;
+        }
+    }
     if(button == impedanceButton) {
         canvas -> toggleImpedanceMode(button->getToggleState());
         static_cast<UtilityButton*>(button)->setLabel(button->getToggleState() ? "ON" : "OFF");
@@ -199,9 +217,58 @@ void UG3ElectrodeViewerToolbar::buttonClicked (Button* button){
     else if (button == subselectVertDecButton){
         canvas -> updateSubselectWindow(subselectWindowOptions::VertDec);
     }
+
+    else if (button == loadLayoutButton){
+        FileChooser fc("Choose an electrode layout file",
+                       CoreServices::getDefaultUserSaveDirectory(),
+                       "*",
+                       true);
+
+        if (fc.browseForFileToOpen())
+        {
+            File layoutFile = fc.getResult();
+            canvas -> setElectrodeLayoutPath(layoutFile.getFullPathName());
+        }
+    }
+
 }
+
+std::optional<String> UG3ElectrodeViewerToolbar::getCurrentAcquisitionName() const {
+    for(const auto & button : acquisitionButtons) {
+        if(button -> getToggleState()) {
+            return button -> getName();
+        }
+    }
+    return std::nullopt;
+}
+
 
 void UG3ElectrodeViewerToolbar::toggleEnabled(bool enabled) {
     impedanceButton->setEnabled(enabled);
     voltageSelector->setEnabled(enabled);
 }
+
+void UG3ElectrodeViewerToolbar::buildAcquisitionButtons() {
+    SortedSet<String> capabilities;
+    std::optional<String> currentCapability;
+
+    acquisitionButtons.clear();
+    canvas -> getAcquisitionCapabilities(capabilities, currentCapability);
+
+    for(auto capability : capabilities) {
+        UtilityButton* buttonToAdd = new UtilityButton(capability, Font("Default", "Plain", 15));
+        buttonToAdd->setEnabled(true);
+        buttonToAdd->addListener(this);
+        buttonToAdd->setRadioGroupId(100, juce::dontSendNotification);
+        if(currentCapability.has_value() && currentCapability.value() == capability) {
+            buttonToAdd->setToggleState(true, sendNotification);
+        }
+        else {
+            buttonToAdd->setToggleState(false, sendNotification);
+        }
+        addAndMakeVisible(buttonToAdd);
+        acquisitionButtons.add(buttonToAdd);
+    }
+
+}
+

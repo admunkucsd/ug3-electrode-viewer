@@ -169,7 +169,9 @@ void UG3ElectrodeDisplay::paint(Graphics& g) {
     height += 16;
     g.drawText("Electrode Dimensions: " + String(numChannelsX) + String(" Columns X ") + String(numChannelsY) + String(" Rows"), totalWidth, height, 400, 16, Justification::left);
     height += 16;
-    g.drawText("Effective Sample Rate: " + String(canvas->getSampleRate()), totalWidth, height, 400, 16, Justification::left);
+    g.drawText("Layout File Path: " + String(canvas->getLayoutFilePath()), totalWidth, height, 600, 16, Justification::left);
+    height += 16;
+    g.drawText("Map Enabled: " + (canvas->isLayoutUsingMap() ? String("True") : String("False")), totalWidth, height, 400, 16, Justification::left);
     height += 16;
     g.drawText("Mouse is over electrode: "+String(hoveredElectrode), totalWidth, height, 400, 16, Justification::left);
     height += 16;
@@ -196,7 +198,7 @@ void UG3ElectrodeDisplay::refresh(const float * values, bool isZeroCentered, int
 
 }
 
-void UG3ElectrodeDisplay::setColorRangeText(String max, String min) {
+void UG3ElectrodeDisplay::setColorRangeText(const String& max, const String& min) {
     maxColorRangeText = max;
     minColorRangeText = min;
     repaint();

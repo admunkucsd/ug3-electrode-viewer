@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VISUALIZERCANVAS_H_INCLUDED
 
 #include <VisualizerWindowHeaders.h>
+#include <optional>
 
 class UG3ElectrodeViewer;
 
@@ -74,6 +75,9 @@ public:
     
     void setSubselectedChannels(int start, int rows, int cols, int colsPerRow);
 
+    void getAcquisitionCapabilities(SortedSet<String>& capabilities, std::optional<String>& currentCapability);
+
+    void updateSourceAcquisitionCapability(String capabilityString);
 
 	/** Called when data acquisition is active**/
 	void beginAnimation() override;
@@ -84,8 +88,12 @@ public:
 	void setDisplayColorRangeText();
     
     void updateSubselectWindow(subselectWindowOptions option);
+
+    void setElectrodeLayoutPath(String layoutFilePath);
     
-    String getSampleRate();
+    String getLayoutFilePath();
+
+	bool isLayoutUsingMap();
 
 private:
 

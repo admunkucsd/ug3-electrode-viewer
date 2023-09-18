@@ -49,9 +49,6 @@ UG3ElectrodeViewerCanvas::UG3ElectrodeViewerCanvas(UG3ElectrodeViewer* processor
     toolbar = std::make_unique<UG3ElectrodeViewerToolbar>(this);
     addAndMakeVisible(toolbar.get());
     
-
-    update();
-    
 }
 
 
@@ -80,18 +77,27 @@ void UG3ElectrodeViewerCanvas::refreshState()
 
 void UG3ElectrodeViewerCanvas::update()
 {
-    int layoutMaxX;
-    int layoutMaxY;
+    int layoutMaxX = 0;
+    int layoutMaxY = 0;
     std::vector<int> layout;
-    int probeCols;
-    node -> getLayoutParameters(layoutMaxX, layoutMaxY, layout, probeCols);
+    int probeCols = 0;
+
+    toolbar->buildAcquisitionButtons();
+
+    //get the name of the active button from the toolbar and pass to getLayoutParameters
+    std::optional<String> acquisitionModeName = toolbar->getCurrentAcquisitionName();
+    if(acquisitionModeName.has_value()) {
+        node -> getLayoutParameters(acquisitionModeName.value(), layoutMaxX, layoutMaxY, layout, probeCols);
+    }
     if(probeCols > 0) {
         display -> setProbeLayout(layoutMaxX, layoutMaxY, probeCols);
     }
     else {
-        display -> setGridLayout(layoutMaxX, layoutMaxY, layout);
+        display->setGridLayout(layoutMaxX, layoutMaxY, layout);
     }
+
     toolbar->resized();
+    toolbar->repaint();
 }
 
 
@@ -162,6 +168,17 @@ void UG3ElectrodeViewerCanvas::setSubselectedChannels(int start, int rows, int c
     node->setSubselectedChannels(start, rows, cols, colsPerRow);
 }
 
+void UG3ElectrodeViewerCanvas::getAcquisitionCapabilities(SortedSet<String>& capabilities, std::optional<String>& currentCapability) {
+    capabilities = node -> getCapabilities();
+    currentCapability = node -> getCurrentCapability();
+}
+
+void UG3ElectrodeViewerCanvas::updateSourceAcquisitionCapability(String capabilityString) {
+    node -> sendUpdateActiveCapabilityRequest(capabilityString);
+}
+
+
+
 void UG3ElectrodeViewerCanvas::setDisplayColorRangeText() {
     String max = colorScaleText;
     String min = areElectrodeColorsZeroCentered ? String("-") + colorScaleText : String("0");
@@ -172,9 +189,22 @@ void UG3ElectrodeViewerCanvas::updateSubselectWindow(subselectWindowOptions opti
     display -> updateSubselectWindow(option);
 }
 
-String UG3ElectrodeViewerCanvas::getSampleRate(){
-    return String(node->getSampleRate());
+String UG3ElectrodeViewerCanvas::getLayoutFilePath(){
+    return node->getLayoutFilePathString();
 }
+
+bool UG3ElectrodeViewerCanvas::isLayoutUsingMap() {
+    std::optional<String> currentAcqusitionName = toolbar->getCurrentAcquisitionName();
+    if (!currentAcqusitionName.has_value()) {
+        return false;
+    }
+    return node->doesCapabilityHaveMap(currentAcqusitionName.value());
+}
+
+void UG3ElectrodeViewerCanvas::setElectrodeLayoutPath(String layoutFilePath) {
+    node -> updateSourceElectrodeLayoutPath(layoutFilePath);
+}
+
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
 UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}

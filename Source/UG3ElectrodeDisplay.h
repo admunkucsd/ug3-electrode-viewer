@@ -51,7 +51,7 @@ public:
     
     int getTotalWidth() {return totalWidth;}
     
-    void setColorRangeText(String max, String min);
+    void setColorRangeText(const String& max, const String& min);
     
     void updateSubselectedElectrodes (int start, int rows, int cols, int colsPerRow);
     

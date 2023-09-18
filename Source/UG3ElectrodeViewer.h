@@ -26,7 +26,9 @@
 #define VISUALIZERPLUGIN_H_DEFINED
 
 #include <ProcessorHeaders.h>
+#include <set>
 
+#include "ElectrodeMap.h"
 
 /** 
 	A plugin that includes a canvas for displaying incoming data
@@ -80,13 +82,10 @@ public:
 		Parameter objects*/
 	void loadCustomParametersFromXml(XmlElement* parentElement) override;
     
-    /** Changes the selected stream */
-    void setParameter(int index, float value) override;
-    
     bool startAcquisition() override;
-        
-    void requestElectrodeLayout();
-    
+
+    void requestInputInfo();
+
     const float* getLatestValues() {
         return currentValues.getRawDataPointer();
     }
@@ -94,28 +93,86 @@ public:
     const float* getImpedanceMagnitudes() {
         return impedanceValues.getRawDataPointer();
     }
+
+    const SortedSet<String>& getCapabilities() {
+        return acquisitionCapabilitiesStrings;
+    }
+
+    std::optional<String> getCurrentCapability() const {
+        return selectedCapability;
+    }
+
+    void sendUpdateActiveCapabilityRequest(const String& capability);
     
     float getSampleRate() {return effectiveSampleRate;}
     
     void setLayoutParameters(int layoutMaxX_, int layoutMaxY_, const std::vector<int>& layout_, int probeCol_ = 0);
     
-    void getLayoutParameters(int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_, int& probeCol_);
+    void getLayoutParameters(const String& acquisitionModeName, int& layoutMaxX_, int& layoutMaxY_,std::vector<int>& layout_, int& probeCol_);
 
 	void loadImpedances();
     
     void setSubselectedChannels(int start, int rows, int cols, int colsPerRow);
 
+    void updateSourceElectrodeLayoutPath(const String& layoutFilePath);
+
+    std::set<String> getAvailableStreams() const {
+        return availableStreams;
+    }
+
+    void setCurrentStreamName(String name) {
+        int channelCount = 0;
+
+        for(auto stream : getDataStreams()) {
+            if(stream -> group.name == name || stream->getName() == name) {
+                channelCount += stream -> getChannelCount();
+            }
+        }
+
+        currentValues.clear();
+        currentValues.insertMultiple(0, 0, channelCount);
+
+        currentStreamName = name;
+    }
+
+    String getLayoutFilePathString() {
+        return electrodeLayoutPath.value_or("");
+    }
+
+    bool doesCapabilityHaveMap(String capabilityName) {
+        const auto& mapIt = electrodeMaps.find(capabilityName);
+        if (mapIt == electrodeMaps.end()) {
+            return false;
+        }
+        return  (*mapIt).second.hasMap();
+
+    }
+
+    //Used in lieu of a layout file; only use for testing
+    bool loadElectrodeLayoutJSON(const String& jsonString);
 
 private:
+
+    void loadElectrodeLayoutFile();
+
+    void parseElectrodeLayoutFile(const DynamicObject::Ptr layoutFileContents);
+
+
+    std::optional<std::unordered_map<ElectrodeMapKey,int>> parseChannelMap(Array<var>* mappings, int rows, int cols);
+
+    std::map<String, ElectrodeMap> electrodeMaps;
+
+    SortedSet<String> acquisitionCapabilitiesStrings;
+    std::optional<String> selectedCapability = std::nullopt;
+    std::optional<String> electrodeLayoutPath = std::nullopt;
 
     Array<float> currentValues;
     Array<float> impedanceValues;
 
     float effectiveSampleRate;
-    int totalSamples;
-    int64 lastTimerCallback;
     
-    uint16 currentStream;
+    String currentStreamName;
+    std::set<String> availableStreams;
     
     int layoutMaxX;
     int layoutMaxY;

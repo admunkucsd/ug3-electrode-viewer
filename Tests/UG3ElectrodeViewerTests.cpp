@@ -49,7 +49,6 @@ protected:
         auto data_streams = processor->getDataStreams();
         ASSERT_EQ(data_streams.size(), 1);
         auto streamId = data_streams[0]->getStreamId();
-        processor -> setParameter(0, streamId);
         HeapBlock<char> data;
         size_t dataSize = SystemEvent::fillTimestampAndSamplesData(
             data,
@@ -113,20 +112,41 @@ TEST_F(UG3ElectrodeViewerTests, DataIntegrityTest) {
 }
 
 TEST_F(UG3ElectrodeViewerTests, VisualIntegrityTest) {
-    
+
     const int canvasX = 200;
     const int canvasY = 200;
     const int channelsX = 4;
     const int channelsY = 4;
     const int numSamples = 10;
     const Rectangle<int> canvasSnapshot(20, 20, 44, 44);
-    
+
     std::unique_ptr<UG3ElectrodeViewerCanvas> canvas = std::make_unique<UG3ElectrodeViewerCanvas>(processor);
-    canvas -> setSize(canvasX, canvasY);
-    std::vector<int> empty_layout;
-    processor->setLayoutParameters(channelsX, channelsY, empty_layout);
+
+    std::map<String,var> payload;
+
+    payload["capabilities"] = var(Array<String>{"1Hz/16Ch"});
+    payload["currentCapability"] = var("1Hz/16Ch");
+
+    String msg = BroadcastParser::build("", "LOADINPUTINFO", payload);
+
+    processor->handleConfigMessage(msg);
+
+    DynamicObject::Ptr dimensions = new DynamicObject();
+    dimensions ->setProperty("rows",4);
+    dimensions ->setProperty("cols",4);
+
+    DynamicObject::Ptr jsonObject = new DynamicObject();
+    jsonObject ->setProperty("1Hz/16Ch", var(dimensions));
+
+    String jsonString = JSON::toString(var(jsonObject), true);
+
+    ASSERT_TRUE(processor->loadElectrodeLayoutJSON(jsonString));
     canvas -> update();
-    
+    canvas -> setSize(canvasX, canvasY);
+    canvas -> update();
+    processor->setCurrentStreamName("FakeSourceNode0");
+
+
     tester->startAcquisition(false);
 
     //+5mV, not zero centered, 0 to 160uV buffer
@@ -134,33 +154,36 @@ TEST_F(UG3ElectrodeViewerTests, VisualIntegrityTest) {
     auto input_buffer = CreateBuffer(0, 10, num_channels, numSamples);
     WriteBlock(input_buffer);
     canvas -> refresh();
+
     Image canvas_image = canvas -> createComponentSnapshot(canvasSnapshot);
+
+
     checkElectrodePixels(input_buffer, canvas_image, channelsX, channelsY, 5000, false);
-    
+
     //+5mV, not zero centered, -1000 to 7000 uV buffer
     input_buffer = CreateBuffer(-1000, 500, num_channels, numSamples);
     WriteBlock(input_buffer);
     canvas -> refresh();
     canvas_image = canvas -> createComponentSnapshot(canvasSnapshot);
     checkElectrodePixels(input_buffer, canvas_image, channelsX, channelsY, 5000, false);
-    
+
     canvas -> setColorScaleFactor(10000, "10mV");
     canvas -> toggleZeroCenter(true);
-    
+
     //+-10mV -1000 to 7000 uV buffer
     input_buffer = CreateBuffer(-1000, 500, num_channels, numSamples);
     WriteBlock(input_buffer);
     canvas -> refresh();
     canvas_image = canvas -> createComponentSnapshot(canvasSnapshot);
     checkElectrodePixels(input_buffer, canvas_image, channelsX, channelsY, 10000, true);
-    
+
     //+=10mV, zero centered, all 10001 uV buffer
     input_buffer = CreateBuffer(10001, 0, num_channels, numSamples);
     WriteBlock(input_buffer);
     canvas -> refresh();
     canvas_image = canvas -> createComponentSnapshot(canvasSnapshot);
     checkElectrodePixels(input_buffer, canvas_image, channelsX, channelsY, 10000, true);
-    
+
     tester->stopAcquisition();
 }
 

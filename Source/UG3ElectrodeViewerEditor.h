@@ -70,9 +70,7 @@ private:
     std::unique_ptr<Label> streamSelectionLabel;
     std::unique_ptr<ComboBox> streamSelection;
 
-    uint16 selectedStream = 0;
-
-    void setDrawableStream(uint16 streamId);
+    void setDrawableStream(String streamName);
 
 	/** Generates an assertion if this class leaks */
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UG3ElectrodeViewerEditor);

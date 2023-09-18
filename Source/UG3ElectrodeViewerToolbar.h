@@ -9,7 +9,8 @@
 #define UG3InterfaceDisplayInfo_h
 
 #include <VisualizerWindowHeaders.h>
-
+#include <CoreServicesHeader.h>
+#include <optional>
 class UG3ElectrodeViewerCanvas;
 
 class UG3ElectrodeViewerToolbar : public Component,
@@ -34,7 +35,9 @@ public:
 
     static String calculateMetricString(int value, String unit, int prefixShiftsOffset = 0);
     
-    
+    void buildAcquisitionButtons();
+
+    std::optional<String> getCurrentAcquisitionName() const;
 private:
     
     static const std::vector<int> voltageOptions;
@@ -52,7 +55,10 @@ private:
     ScopedPointer<UtilityButton> subselectHorIncButton;
     ScopedPointer<UtilityButton> subselectHorDecButton;
 
+    ScopedPointer<UtilityButton> loadLayoutButton;
 
+
+    OwnedArray<UtilityButton> acquisitionButtons;
 };
 
 

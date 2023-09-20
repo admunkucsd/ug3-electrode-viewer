@@ -60,6 +60,12 @@ public:
 
     /** Enables stream selection */
     void stopAcquisition() override;
+
+	/** Saves layout type */
+	void saveVisualizerEditorParameters(XmlElement* xml) override;
+
+	/** Loads layout type*/
+	void loadVisualizerEditorParameters(XmlElement* xml) override;
     
 private:
     

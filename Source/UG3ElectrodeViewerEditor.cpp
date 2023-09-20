@@ -110,3 +110,27 @@ void UG3ElectrodeViewerEditor::stopAcquisition()
     streamSelection->setEnabled(true);
     disable();
 }
+
+void UG3ElectrodeViewerEditor::saveVisualizerEditorParameters(XmlElement* xml)
+{
+    XmlElement* ug3ElectrodeViewer = xml->createNewChildElement("UG3_ELECTRODE_VIEWER_EDITOR");
+    if (streamSelection->getText().isNotEmpty()) {
+        ug3ElectrodeViewer->setAttribute("STREAM_SELECTION", streamSelection->getText());
+    }
+
+
+}
+
+void UG3ElectrodeViewerEditor::loadVisualizerEditorParameters(XmlElement* xml) {
+    forEachXmlChildElement(*xml, subNode) {
+        if (subNode->hasTagName("UG3_ELECTRODE_VIEWER_EDITOR")) {
+            auto selectedStream = subNode->getStringAttribute("STREAM_SELECTION");
+            for (int idx = 0; idx < streamSelection->getNumItems(); idx++) {
+                if (streamSelection->getItemText(idx) == selectedStream) {
+                    streamSelection->setSelectedItemIndex(idx, sendNotification);
+                    break;
+                }
+            }
+        }
+    }
+}

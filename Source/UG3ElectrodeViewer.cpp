@@ -168,19 +168,12 @@ void UG3ElectrodeViewer::loadCustomParametersFromXml(XmlElement* parentElement)
 }
 
 void UG3ElectrodeViewer::requestInputInfo() {
-    GenericProcessor* sn = getSourceNode();
+    GenericProcessor* sn = CoreServices::getProcessorByName("UG3 Interface", true);
 
     if(sn == nullptr) {
         return;
     }
 
-    while(sn -> sourceNode != nullptr) {
-        sn = sn -> sourceNode;
-    }
-    if(!(sn -> isSource())) {
-
-        return;
-    }
     std::map<String, var> payload;
     payload["requestNodeId"] = getNodeId();
 
@@ -189,19 +182,12 @@ void UG3ElectrodeViewer::requestInputInfo() {
 }
 
 void UG3ElectrodeViewer::sendUpdateActiveCapabilityRequest(const String& capability){
-    GenericProcessor* sn = getSourceNode();
+    GenericProcessor* sn = CoreServices::getProcessorByName("UG3 Interface", true);
 
     if(sn == nullptr) {
         return;
     }
 
-    while(sn -> sourceNode != nullptr) {
-        sn = sn -> sourceNode;
-    }
-    if(!(sn -> isSource())) {
-
-        return;
-    }
 
     std::map<String, var> payload;
     payload["acquisitionCapability"] = capability;
@@ -346,19 +332,12 @@ void UG3ElectrodeViewer::parseElectrodeLayoutFile(const DynamicObject::Ptr layou
 
 
 void UG3ElectrodeViewer::updateSourceElectrodeLayoutPath(const String& layoutFilePath){
-    GenericProcessor* sn = getSourceNode();
+    GenericProcessor* sn = CoreServices::getProcessorByName("UG3 Interface", true);
 
-    if(sn == nullptr) {
+    if (sn == nullptr) {
         return;
     }
 
-    while(sn -> sourceNode != nullptr) {
-        sn = sn -> sourceNode;
-    }
-    if(!(sn -> isSource())) {
-
-        return;
-    }
 
     std::map<String, var> payload;
     payload["layoutFilePath"] = layoutFilePath;
@@ -411,3 +390,4 @@ std::optional<std::unordered_map<ElectrodeMapKey,int>> UG3ElectrodeViewer::parse
         return ret;
     }
 }
+

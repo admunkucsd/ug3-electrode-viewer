@@ -38,6 +38,11 @@ public:
     void buildAcquisitionButtons();
 
     std::optional<String> getCurrentAcquisitionName() const;
+
+    void saveToolbarParameters(XmlElement* xml);
+
+    void loadToolbarParameters(XmlElement* xml);
+
 private:
     
     static const std::vector<int> voltageOptions;

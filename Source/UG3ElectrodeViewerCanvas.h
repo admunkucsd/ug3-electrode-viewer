@@ -95,6 +95,10 @@ public:
 
 	bool isLayoutUsingMap();
 
+	void saveCustomParametersToXml(XmlElement* xml) override;
+
+	void loadCustomParametersFromXml(XmlElement* xml) override;
+
 private:
 
 	/** Pointer to the processor class */

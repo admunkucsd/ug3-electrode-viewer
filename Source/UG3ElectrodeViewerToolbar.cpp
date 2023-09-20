@@ -272,3 +272,39 @@ void UG3ElectrodeViewerToolbar::buildAcquisitionButtons() {
 
 }
 
+void UG3ElectrodeViewerToolbar::saveToolbarParameters(XmlElement* xml) {
+    XmlElement* ug3Toolbar = xml->createNewChildElement("TOOLBAR");
+
+    ug3Toolbar->setAttribute("VOLTAGE_SELECTOR", voltageSelector->getItemText(voltageSelector->getSelectedId() - 1));
+
+    if (zeroCenterButton->getToggleState()) {
+        ug3Toolbar->setAttribute("ZERO_CENTER_ON",1);
+    }
+
+}
+
+void UG3ElectrodeViewerToolbar::loadToolbarParameters(XmlElement* xml) {
+    forEachXmlChildElement(*xml, subNode) {
+        if (subNode->hasTagName("TOOLBAR")) {
+            auto selectedVoltage = subNode->getStringAttribute("VOLTAGE_SELECTOR");
+            for (int idx = 0; idx < voltageSelector->getNumItems(); idx++) {
+                if (voltageSelector->getItemText(idx) == selectedVoltage) {
+                    voltageSelector->setSelectedItemIndex(idx, sendNotification);
+                    break;
+                }
+            }
+            auto zeroCenterEnabled = subNode->getIntAttribute("ZERO_CENTER_ON");
+
+            if (zeroCenterEnabled > 0) {
+                zeroCenterButton->setToggleState(true, sendNotification);
+            }
+
+
+        }
+    }
+
+
+}
+
+
+

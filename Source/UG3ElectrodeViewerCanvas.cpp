@@ -155,8 +155,6 @@ void UG3ElectrodeViewerCanvas::toggleImpedanceMode(bool isImpedanceOn_) {
 void UG3ElectrodeViewerCanvas::toggleZeroCenter(bool areElectrodeColorsZeroCentered_) {
     areElectrodeColorsZeroCentered = areElectrodeColorsZeroCentered_;
     setDisplayColorRangeText();
-    if (!animationIsActive)
-        refresh();
 }
 
 void UG3ElectrodeViewerCanvas::toggleSubselect(bool isSubselectActive) {
@@ -205,6 +203,22 @@ void UG3ElectrodeViewerCanvas::setElectrodeLayoutPath(String layoutFilePath) {
     node -> updateSourceElectrodeLayoutPath(layoutFilePath);
 }
 
+void UG3ElectrodeViewerCanvas::saveCustomParametersToXml(XmlElement* xml) {
+
+    XmlElement* ug3ElectrodeViewerCanvas = xml->createNewChildElement("UG3_ELECTRODE_VIEWER_CANVAS");
+
+    toolbar->saveToolbarParameters(ug3ElectrodeViewerCanvas);
+
+
+}
+
+void UG3ElectrodeViewerCanvas::loadCustomParametersFromXml(XmlElement* xml) {
+    forEachXmlChildElement(*xml, subNode) {
+        if (subNode->hasTagName("UG3_ELECTRODE_VIEWER_CANVAS")) {
+            toolbar->loadToolbarParameters(subNode);
+        }
+     }
+}
 
 UG3ElectrodeViewerViewport::UG3ElectrodeViewerViewport(UG3ElectrodeViewerCanvas* canvas) : Viewport(), canvas(canvas) {}
 UG3ElectrodeViewerViewport::~UG3ElectrodeViewerViewport() {}

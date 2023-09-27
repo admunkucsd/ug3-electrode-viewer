@@ -79,7 +79,8 @@ void UG3ElectrodeViewer::process(AudioBuffer<float>& buffer)
             //Else, just use linear mapping
             if(electrodeMapIt != electrodeMaps.end() &&
                     (*electrodeMapIt).second.hasMap()) {
-                std::optional mapping = (*electrodeMapIt).second.getChannelMapping(channel->getName().toStdString(), stream -> getName().toStdString());
+                String channelStreamName = stream->getName().upToFirstOccurrenceOf("-",false,false);
+                std::optional mapping = (*electrodeMapIt).second.getChannelMapping(channel->getName().toStdString(), channelStreamName.toStdString());
                 //It is possible for a channel not to have a mapping (If visual buffer < acquisition buffer)
                 //In this case, skip adding this channel to the visual buffer
                 if(mapping.has_value()) {

@@ -314,11 +314,6 @@ void UG3ElectrodeViewer::parseElectrodeLayoutFile(const DynamicObject::Ptr layou
                 channelMap = parseChannelMap(entry.value.getDynamicObject()->getProperty("map").getArray(),
                                              tempRows.value(),
                                              tempCols.value());
-                //Channel map size should match dimensions
-                if(channelMap.value().size() != tempRows.value() * tempCols.value()){
-                    LOGE("Tried to load a channel map for ", entry.name.toString(), " layout, but map did not match dimensions")
-                    channelMap = std::nullopt;
-                }
             }
             ElectrodeMap newMap(tempCols.value(), tempRows.value());
             if(channelMap.has_value() ) {
